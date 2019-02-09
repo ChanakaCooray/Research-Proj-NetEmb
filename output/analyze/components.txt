@@ -1,0 +1,30 @@
+Cell: 1CDES_p3.H6
+# of edges: 3584
+# of nodes: 2665
+Connected: False
+Connected Components: 283
+
+Cell: 1CDU.44
+# of edges: 7608
+# of nodes: 2665
+Connected: False
+Connected Components: 130
+
+Cell: 1CDX1.71
+# of edges: 18071
+# of nodes: 2665
+Connected: False
+Connected Components: 113
+
+Cell: 1CDX2.372
+# of edges: 23071
+# of nodes: 2665
+Connected: False
+Connected Components: 110
+
+Cell: 1CDX4.206
+# of edges: 26356
+# of nodes: 2665
+Connected: False
+Connected Components: 114
+
