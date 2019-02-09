@@ -1,10 +1,13 @@
 import os
 import pandas as pd
+# import threading
+# from concurrent.futures import ThreadPoolExecutor
+# from time import sleep
 
 # Path for GATC.fends file
 fendsFile = "metadata/GATC.fends"
 # Path for the root directory of the data files
-dataDir = "data.dir"
+dataDir = "../data"
 # path to metadata of Diploids 2i
 metaDip2iFile = "metadata/Diploids_2i.txt"
 # path to metadata of Diploids serum
@@ -13,20 +16,11 @@ metaDipSerumFile = "metadata/Diploids_serum.txt"
 metaHaploidsFile = "metadata/Haploids.txt"
 
 # output directory
-outputDir = os.path.join("output", "chromosomeMap")
+outputDir = os.path.join("../output", "chromosomeMap")
 
 # create output directories if not exist
 if not os.path.exists(outputDir):
     os.makedirs(outputDir)
-
-
-# helper function to generate expected output
-def generate_data(row, fends):
-    fend1 = fends.loc[row['fend1']]
-    fend2 = fends.loc[row['fend2']]
-
-    return pd.Series({'chr1': fend1['chr'], 'coord1': fend1['coord'], 'chr2': fend2['chr'], 'coord2': fend2['coord'],
-                      'count': 1})
 
 
 # store metadata of Diploids abd Haploids
@@ -44,9 +38,15 @@ df_Hap.index = df_Hap.index.map(lambda x: x.replace("_", "."))
 
 # create a map using the GATC.fends file
 print("Processing GATC.fends file...")
-df_fends = pd.read_csv(fendsFile, sep="\t", header=0, index_col=0, dtype={'fend': 'int', 'chr': 'str', 'coord': 'int'})
+fends = {}
+with open(fendsFile) as f:
+    next(f)
+    for line in f:
+        splitLine = line.split()
+        fends[splitLine[0]] = (splitLine[1], splitLine[2])
 
-for subdir, dirs, files in os.walk(dataDir):
+print("Processing data...")
+for subdir, dirs, files in (os.walk(dataDir)):
     dirName = subdir.split("/")[-1]
 
     if dirName not in df_Dip2i.index and dirName not in df_DipSerum.index and dirName not in df_Hap.index:
@@ -64,10 +64,12 @@ for subdir, dirs, files in os.walk(dataDir):
         if df_Hap.loc[dirName]['passed_qc'] == 0:
             continue
 
-    # for fileName in files:
-    #     print fileName
-    df_adj = pd.read_csv(os.path.join(subdir, "adj"), sep="\t", header=0,
-                         dtype={'fend1': 'int', 'fend2': 'int', 'count': 'int'})
-    df_output = df_adj.apply(lambda row: generate_data(row, df_fends), axis=1)
-    df_output.to_csv(os.path.join(outputDir, dirName), header=True, index=None, sep=' ',
-                     columns=['chr1', 'coord1', 'chr2', 'coord2', 'count'])
+    out = open(os.path.join(outputDir, dirName), "w")
+    out.write("chr1 coord1 chr2 coord2 count\n")
+    with open(os.path.join(subdir, "adj")) as f:
+        "Processing " + os.path.join(subdir, "adj") + " ..."
+        next(f)
+        for line in f:
+            splitLine = line.split()
+            out.write(fends[splitLine[0]][0] + " " + fends[splitLine[0]][1] + " " + fends[splitLine[1]][0] + " " +
+                      fends[splitLine[1]][1] + " 1\n")
