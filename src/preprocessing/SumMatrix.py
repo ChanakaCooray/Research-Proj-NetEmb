@@ -39,7 +39,7 @@ def main():
             matrix[key[0]][key[1]] = val
             matrix[key[1]][key[0]] = val
 
-        np.fill_diagonal(matrix, 0)
+        # np.fill_diagonal(matrix, 0)
 
         sum_matrix = sum_matrix + matrix
 
