@@ -1,0 +1,8 @@
+cell_nm	passed_qc	group
+1CDU_1	1	early-S
+1CDU_2	1	early-S
+1CDU_4	0	early-S
+1CDU_5	1	G1
+1CDU_7	1	late-S/G2
+1CDU_8	1	early-S
+1CDU_11	0	NA
