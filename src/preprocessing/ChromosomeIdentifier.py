@@ -1,5 +1,6 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def processFile(subdir, dirName, fends, outputDir):
@@ -16,19 +17,26 @@ def processFile(subdir, dirName, fends, outputDir):
 
 
 def main():
-    # Path for GATC.fends file
-    fendsFile = "metadata/GATC.fends"
-    # Path for the root directory of the data files
-    dataDir = "data.dir"
-    # path to metadata of Diploids 2i
-    metaDip2iFile = "metadata/Diploids_2i.txt"
-    # path to metadata of Diploids serum
-    metaDipSerumFile = "metadata/Diploids_serum.txt"
-    # path to metadata of Haploids
-    metaHaploidsFile = "metadata/Haploids.txt"
+    parser = ArgumentParser("ChromosomeIdentifier",
+                            formatter_class=ArgumentDefaultsHelpFormatter,
+                            conflict_handler='resolve')
+    parser.add_argument("--input", required=True, help="Path for the root directory of the data files")
+    parser.add_argument("--output", required=True, help="output directory")
+    parser.add_argument("--metadata", required=True)
 
-    # output directory
-    outputDir = os.path.join("output", "chromosomeMap")
+    args = parser.parse_args()
+    dataDir = args.input
+    outputDir = args.output
+    metadata = args.metadata
+
+    # Path for GATC.fends file
+    fendsFile = "{}/GATC.fends".format(metadata)
+    # path to metadata of Diploids 2i
+    metaDip2iFile = "{}/Diploids_2i.txt".format(metadata)
+    # path to metadata of Diploids serum
+    metaDipSerumFile = "{}/Diploids_serum.txt".format(metadata)
+    # path to metadata of Haploids
+    metaHaploidsFile = "{}/Haploids.txt".format(metadata)
 
     # create output directories if not exist
     if not os.path.exists(outputDir):

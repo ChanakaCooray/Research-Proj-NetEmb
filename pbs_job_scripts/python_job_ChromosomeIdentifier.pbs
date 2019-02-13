@@ -12,6 +12,6 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/ChromosomeIdentifier.py
+python ../src/preprocessing/ChromosomeIdentifier.py --input "../data" --output "../output/chrm/" --metadata "../metadata"
 #
 exit 0

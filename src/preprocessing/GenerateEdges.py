@@ -1,5 +1,6 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def processFile(filename, dataDir, chromBin, binSize, outputDir):
@@ -33,14 +34,28 @@ def processFile(filename, dataDir, chromBin, binSize, outputDir):
 
 
 def main():
-    # input data file
-    dataDir = os.path.join("output", "chromosomeMap")
+    parser = ArgumentParser("GenerateEdges",
+                            formatter_class=ArgumentDefaultsHelpFormatter,
+                            conflict_handler='resolve')
+    parser.add_argument("--input", required=True, help="Path for the root directory of the data files")
+    parser.add_argument("--output", required=True, help="output directory")
+    parser.add_argument("--metadata", required=True)
+    parser.add_argument("--bin-size", required=True)
+
+    args = parser.parse_args()
+    dataDir = args.input
+    outputDir = args.output
+    metadata = args.metadata
+    binSize = 0
+    if args.bin_size=="1M":
+        binSize = 1000000
+    elif args.bin_size=="500k":
+        binSize = 500000
+    elif args.bin_size=="100k":
+        binSize = 100000
+
     # chromosome bins metada
-    chromBin_file = "metadata/chrom_bins.txt"
-    # bin size
-    binSize = 1000000
-    # output directory
-    outputDir = os.path.join("output", "EdgesBin")
+    chromBin_file = "{}/chrom_bins.txt".format(metadata)
 
     # create output directory if not exists
     if not os.path.exists(outputDir):

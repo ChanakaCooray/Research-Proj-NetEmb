@@ -11,6 +11,6 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/SumMatrix.py
+python ../src/preprocessing/SumMatrix.py --analyze-dir "../output/edges_bin/" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX1" --size-chromY 16 --output-dir "../output/"
 #
 exit 0

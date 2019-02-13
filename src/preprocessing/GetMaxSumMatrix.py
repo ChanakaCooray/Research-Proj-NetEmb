@@ -1,12 +1,24 @@
 import os
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def main():
-    analyze_dir = "analyze-1M"
-    analyze_cat = "1CDX1"
+    parser = ArgumentParser("GetMaxSumMatrix",
+                            formatter_class=ArgumentDefaultsHelpFormatter,
+                            conflict_handler='resolve')
+    parser.add_argument("--analyze-dir", required=True)
+    parser.add_argument("--cell-type", required=True)
+    parser.add_argument("--metadata", required=True)
+    parser.add_argument("--bin-size", required=True)
+
+    args = parser.parse_args()
+    analyze_dir = args.analyze_dir
+    analyze_cat = args.cell_type
+    metadata = args.metadata
+    bin_size = args.bin_size
 
     # chromBin_file = "metadata/chrom_bins_1M.txt"
-    chrom_bin_range = "metadata/chrom_bins_range_1M.txt"
+    chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
     # chrom_bin_range = "metadata/chrom_bins_range_500k.txt"
 
     bin_range = {}

@@ -12,6 +12,6 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/GenerateEdges.py
+python ../src/preprocessing/GenerateEdges.py  --input "../data" --output "../output/edges_bin/" --metadata "../metadata" --bin-size "1M"
 #
 exit 0

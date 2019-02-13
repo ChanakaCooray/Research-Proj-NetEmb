@@ -1,15 +1,33 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def main():
-    analyze_dir = "analyze-1M"
-    # analyze_dir = "test"
-    analyze_cat = "1CDX1"
-    size_chromY = 16
+    parser = ArgumentParser("SumMatrix",
+                            formatter_class=ArgumentDefaultsHelpFormatter,
+                            conflict_handler='resolve')
+    parser.add_argument("--analyze-dir", required=True)
+    parser.add_argument("--cell-type", required=True)
+    parser.add_argument("--metadata", required=True)
+    parser.add_argument("--bin-size", required=True)
+    parser.add_argument("--size-chromY", required=True)
+    parser.add_argument("--output-dir", required=True)
 
-    chromBin_file = "metadata/chrom_bins.txt"
+    args = parser.parse_args()
+    analyze_dir = args.analyze_dir
+    analyze_cat = args.cell_type
+    metadata = args.metadata
+    bin_size = args.bin_size
+    size_chromY = int(args.size_chromY)
+    output_dir = args.output_dir
+
+    output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
+
+    # size_chromY = 16
+
+    chromBin_file = "{}/chrom_bins_{}.txt".format(metadata, bin_size)
 
     # search for last index
     with open(chromBin_file) as f:
@@ -28,7 +46,7 @@ def main():
                 splitLine = line.split()
                 edge1 = int(splitLine[0])
                 edge2 = int(splitLine[1])
-                if(edge1<=edge2):
+                if (edge1 <= edge2):
                     data[(edge1, edge2)] = 1
                 else:
                     data[(edge2, edge1)] = 1
@@ -43,7 +61,8 @@ def main():
 
         sum_matrix = sum_matrix + matrix
 
-    np.savetxt("test.txt", sum_matrix, fmt='%d', delimiter=' ', newline='\n')
+    np.savetxt(output_file, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
+
 
 if __name__ == '__main__':
     main()

@@ -11,6 +11,6 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/GetMaxSumMatrix.py
+python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "../output/edges_bin/" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX1"
 #
 exit 0
