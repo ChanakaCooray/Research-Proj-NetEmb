@@ -98,7 +98,7 @@ def main():
     # my_list = []
     data = np.triu(data, k=-1)
     out = open(output_file, "w")
-    out.write("{} {} {}\n".format("bin1", "bin2", "count", "p_value"))
+    out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
     for i in range(0, rows):
         for j in range(0, cols):
