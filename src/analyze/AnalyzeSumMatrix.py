@@ -28,9 +28,24 @@ def main():
 
     sum_max = 0
     if bin_size == "1M":
-        sum_max = 24083
+        if cell_type == "1CDX1":
+            sum_max = 24083
+        elif cell_type == "1CDX2":
+            sum_max = 24083
+        elif cell_type == "1CDX3":
+            sum_max = 24083
+        elif cell_type == "1CDX4":
+            sum_max = 24083
     elif bin_size == "500k":
-        sum_max = 27539
+        # sum_max = 27539
+        if cell_type == "1CDX1":
+            sum_max = 24083
+        elif cell_type == "1CDX2":
+            sum_max = 24083
+        elif cell_type == "1CDX3":
+            sum_max = 24083
+        elif cell_type == "1CDX4":
+            sum_max = 24083
 
     matrix_file = "analyze-{}/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
     chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
