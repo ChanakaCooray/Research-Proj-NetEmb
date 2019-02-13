@@ -1,6 +1,7 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+import sys
 
 
 def processFile(filename, dataDir, chromBin, binSize, outputDir):
@@ -53,6 +54,8 @@ def main():
         binSize = 500000
     elif args.bin_size=="100k":
         binSize = 100000
+    else:
+        sys.exit("Bin size is not defined.")
 
     # chromosome bins metada
     chromBin_file = "{}/chrom_bins.txt".format(metadata)

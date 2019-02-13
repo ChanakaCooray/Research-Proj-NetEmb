@@ -58,7 +58,7 @@ def main():
 
     matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
     chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
-    output_file = "output/analyze/analyze_sum_matrix/output_sum_matrix_{}.txt".format(bin_size)
+    output_file = "output/analyze/analyze_sum_matrix/output_sum_matrix_{}_{}.txt".format(bin_size, cell_type)
 
     bin_range = {}
     with open(chrom_bin_range) as f:
