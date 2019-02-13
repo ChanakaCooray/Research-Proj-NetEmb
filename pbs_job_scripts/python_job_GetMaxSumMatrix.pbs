@@ -11,6 +11,9 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "../output/edges_bin/" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX1"
+python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX1" >> ../analyze-1M/Max1CDX1_1M.txt
+python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX2" >> ../analyze-1M/Max1CDX2_1M.txt
+python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX3" >> ../analyze-1M/Max1CDX3_1M.txt
+python ../src/preprocessing/GetMaxSumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --metadata "../metadata" --bin-size "1M" --cell-type "1CDX4" >> ../analyze-1M/Max1CDX4_1M.txt
 #
 exit 0
