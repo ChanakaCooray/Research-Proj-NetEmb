@@ -8,7 +8,6 @@ build
 *.ipr
 *.iws
 *.log
-*.fends
 .classpath
 .project
 .settings
