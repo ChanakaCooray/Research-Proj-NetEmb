@@ -11,19 +11,30 @@ import math
 
 
 def main():
-    matrix_file = "analyze-1M/sum_matrix_1M_1CDX1.txt"
-    # matrix_file = "analyze-1M/sum_matrix_1M_1CDX2.txt"
-    # matrix_file = "analyze-1M/sum_matrix_1M_1CDX3.txt"
-    # matrix_file = "analyze-1M/sum_matrix_1M_1CDX4.txt"
-    # matrix_file = "analyze-500k/sum_matrix_500k_1CDX1.txt"
-    # matrix_file = "analyze-500k/sum_matrix_500k_1CDX2.txt"
-    # matrix_file = "analyze-500k/sum_matrix_500k_1CDX3.txt"
-    # matrix_file = "analyze-500k/sum_matrix_500k_1CDX4.txt"
+    cell_type = "1CDX1"
+    bin_size = "1M"
 
-    chrom_bin_range = "metadata/chrom_bins_range_1M.txt"
-    # chrom_bin_range = "metadata/chrom_bins_range_500k.txt"
+    number_of_cells = 0
 
-    number_of_cells = 280
+    # "1CDX1" (280 cells), "1CDX2" (303 cells), "1CDX3" (262 cells) and "1CDX4" (326 cells))
+    if cell_type == "1CDX1":
+        number_of_cells = 280
+    elif cell_type == "1CDX2":
+        number_of_cells = 303
+    elif cell_type == "1CDX3":
+        number_of_cells = 262
+    elif cell_type == "1CDX4":
+        number_of_cells = 326
+
+    sum_max = 0
+    if bin_size == "1M":
+        sum_max = 24083
+    elif bin_size == "500k":
+        sum_max = 27539
+
+    matrix_file = "analyze-{}/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
+    chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
+    output_file = "output/analyze/analyze_sum_matrix/output_sum_matrix_{}.txt".format(bin_size)
 
     bin_range = {}
     with open(chrom_bin_range) as f:
@@ -38,7 +49,7 @@ def main():
 
     zero_bins = 0
     sum_by_row = data.sum(axis=0).astype(int)
-    # print(sum_by_row.shape)
+
     zero_bin_list = {}
     for i, val in enumerate(sum_by_row):
         if val == 0:
@@ -80,27 +91,23 @@ def main():
                         count += 1
 
     # unique, counts = np.unique(data, return_counts=True)
-
     M = ((count_N - count_X) ** 2 - sum_reduction) / 2
 
-    # print(M)
-
     count1 = 0
-    p_max = calculate_pmax(M)
+    p_max = calculate_pmax(M, sum_max)
     # my_list = []
     data = np.triu(data, k=-1)
-    output_file = "output/analyze/output_sum_matrix_1M.txt"
     out = open(output_file, "w")
-    out.write("{} {} {}\n".format("bin1", "bin2", "count"))
+    out.write("{} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
     for i in range(0, rows):
         for j in range(0, cols):
             if data[i][j] != 0:
                 value = int(data[i][j])
-
-                if calculate_f(number_of_cells, value, p_max) <= threshold(M):
+                p_value = calculate_f(number_of_cells, value, p_max)
+                if p_value <= threshold(M):
                     count1 += 1
-                    out.write("{} {} {}\n".format(i, j, value))
+                    out.write("{} {} {} {}\n".format(i, j, value, p_value))
                     # my_list.append(value)
     out.close()
 
@@ -122,9 +129,7 @@ def calculate_f(n, t, p_max):
     return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
 
 
-def calculate_pmax(M):
-    sum_max = get_sum_max()
-
+def calculate_pmax(M, sum_max):
     p_max = sum_max / M
     return p_max
 
@@ -136,11 +141,6 @@ def nCr(n, r):
 
 def threshold(M):
     return 0.05 / M
-
-
-def get_sum_max():
-    return 24083  # for 1M cdx1
-    # return 27539 #for 1M cdx1
 
 
 def histogram(matrix):
