@@ -8,11 +8,20 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.cm as cm
 import math
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def main():
-    cell_type = "1CDX1"
-    bin_size = "1M"
+    parser = ArgumentParser("AnalyzeSumMatrix",
+                            formatter_class=ArgumentDefaultsHelpFormatter,
+                            conflict_handler='resolve')
+    parser.add_argument("--cell-type", required=True, help='Cell type, Ex: 1CDX1')
+    parser.add_argument("--bin-size", required=True, help='Bin size, Ex: 1M, 500k')
+
+    args = parser.parse_args()
+
+    cell_type = args.cell_type
+    bin_size = args.bin_size
 
     number_of_cells = 0
 

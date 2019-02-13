@@ -38,7 +38,7 @@ def main():
     # chromosome bins metada
     chromBin_file = "metadata/chrom_bins.txt"
     # bin size
-    binSize = 100000
+    binSize = 1000000
     # output directory
     outputDir = os.path.join("output", "EdgesBin")
 

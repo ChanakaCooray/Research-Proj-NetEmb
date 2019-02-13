@@ -1,0 +1,17 @@
+#!/bin/bash
+#PBS -q default
+#PBS -N download_Haploid_2i
+##serial jobs: only 1 processor core is requested
+#PBS -l select=1:mem=2gb:ncpus=1
+#PBS -l walltime=08:00:00
+##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
+#PBS -W group_list=x-ccast-prj-luliu
+#
+
+#
+cd $PBS_O_WORKDIR
+#
+##change the input filename if needed
+wget http://compgenomics.weizmann.ac.il/files/archives/schic_hap_2i_adj_files.tar.gz
+#
+exit 0
