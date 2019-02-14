@@ -11,10 +11,10 @@
 cd $PBS_O_WORKDIR
 #
 ##change the input filename if needed
-python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX1" --output-dir "../analyze-1M/SumMatrix"
-python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX2" --output-dir "../analyze-1M/SumMatrix"
-python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX3" --output-dir "../analyze-1M/SumMatrix"
-python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX4" --output-dir "../analyze-1M/SumMatrix"
+##python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX1" --output-dir "../analyze-1M/SumMatrix"
+##python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX2" --output-dir "../analyze-1M/SumMatrix"
+##python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX3" --output-dir "../analyze-1M/SumMatrix"
+##python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/EdgesBin" --bin-size "1M" --cell-type "1CDX4" --output-dir "../analyze-1M/SumMatrix"
 
 python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/EdgesBin" --bin-size "500k" --cell-type "1CDX1" --output-dir "../analyze-500k/SumMatrix"
 python ../src/preprocessing/SumMatrix.py --analyze-dir "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/EdgesBin" --bin-size "500k" --cell-type "1CDX2" --output-dir "../analyze-500k/SumMatrix"
