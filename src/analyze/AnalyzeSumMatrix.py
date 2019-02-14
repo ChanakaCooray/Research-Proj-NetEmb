@@ -34,6 +34,8 @@ def main():
         number_of_cells = 262
     elif cell_type == "1CDX4":
         number_of_cells = 326
+    else:
+        sys.exit("Cell type is not defined.")
 
     sum_max = 0
     if bin_size == "1M":
@@ -48,17 +50,20 @@ def main():
     elif bin_size == "500k":
         # sum_max = 27539
         if cell_type == "1CDX1":
-            sum_max = 24083
+            sum_max = 29979
         elif cell_type == "1CDX2":
             sum_max = 24083
         elif cell_type == "1CDX3":
             sum_max = 24083
         elif cell_type == "1CDX4":
             sum_max = 24083
+    else:
+        sys.exit("Bin size is not defined.")
 
     matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
     chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
-    output_file = "output/analyze/analyze_sum_matrix/output_sum_matrix_{}_{}.txt".format(bin_size, cell_type)
+    output_file = "output/analyze/analyze_sum_matrix/{}/output_sum_matrix_{}_{}.txt".format(bin_size, bin_size,
+                                                                                            cell_type)
 
     bin_range = {}
     with open(chrom_bin_range) as f:

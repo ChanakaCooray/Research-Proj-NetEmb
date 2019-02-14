@@ -48,17 +48,17 @@ def main():
     outputDir = args.output
     metadata = args.metadata
     binSize = 0
-    if args.bin_size=="1M":
+    if args.bin_size == "1M":
         binSize = 1000000
-    elif args.bin_size=="500k":
+    elif args.bin_size == "500k":
         binSize = 500000
-    elif args.bin_size=="100k":
+    elif args.bin_size == "100k":
         binSize = 100000
     else:
         sys.exit("Bin size is not defined.")
 
     # chromosome bins metada
-    chromBin_file = "{}/chrom_bins.txt".format(metadata)
+    chromBin_file = "{}/chrom_bins_{}.txt".format(metadata, args.bin_size)
 
     # create output directory if not exists
     if not os.path.exists(outputDir):
