@@ -48,15 +48,14 @@ def main():
         elif cell_type == "1CDX4":
             sum_max = 39006
     elif bin_size == "500k":
-        # sum_max = 27539
         if cell_type == "1CDX1":
-            sum_max = 29979
+            sum_max = 27539
         elif cell_type == "1CDX2":
-            sum_max = 24083
+            sum_max = 25419
         elif cell_type == "1CDX3":
-            sum_max = 24083
+            sum_max = 39575
         elif cell_type == "1CDX4":
-            sum_max = 24083
+            sum_max = 42029
     else:
         sys.exit("Bin size is not defined.")
 
