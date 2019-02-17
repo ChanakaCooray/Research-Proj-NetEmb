@@ -61,8 +61,11 @@ def main():
 
     matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
     chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
-    output_file = "output/analyze/analyze_sum_matrix/{}/output_sum_matrix_{}_{}.txt".format(bin_size, bin_size,
-                                                                                            cell_type)
+    # output_file = "output/analyze/analyze_sum_matrix/{}/output_sum_matrix_{}_{}_v1.txt".format(bin_size, bin_size,
+    #                                                                                                       cell_type)
+    output_file = "output/analyze/analyze_sum_matrix/{}/threshold-0.1/output_sum_matrix_{}_{}_v1.txt".format(bin_size,
+                                                                                                             bin_size,
+                                                                                                             cell_type)
 
     bin_range = {}
     with open(chrom_bin_range) as f:
@@ -121,22 +124,31 @@ def main():
     # unique, counts = np.unique(data, return_counts=True)
     M = ((count_N - count_X) ** 2 - sum_reduction) / 2
 
+    # print(M)
+    # sys.exit(0)
+
     count1 = 0
     p_max = calculate_pmax(M, sum_max)
     # my_list = []
     data = np.triu(data, k=-1)
     out = open(output_file, "w")
-    out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
+    out.write("{} {} {}\n".format("bin1", "bin2", "count", "p_value"))
+    # out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
     for i in range(0, rows):
         for j in range(0, cols):
             if data[i][j] != 0:
                 value = int(data[i][j])
                 p_value = calculate_f(number_of_cells, value, p_max)
-                if p_value <= threshold(M):
+                # if p_value <= threshold(M):
+                #     count1 += 1
+                #     out.write("{} {} {} {}\n".format(i, j, value, p_value))
+                # my_list.append(value)
+
+                if value >= number_of_cells / 10:
                     count1 += 1
-                    out.write("{} {} {} {}\n".format(i, j, value, p_value))
-                    # my_list.append(value)
+                    out.write("{} {} {}\n".format(i, j, value, p_value))
+
     out.close()
 
     # my_arr = np.array(my_list)
