@@ -25,7 +25,6 @@ def generate_bins(bin_size, shift):
 
 
 def calc_bin(x, bin_size, shift):
-    print(shift)
     bin_num = int(x) // bin_size
 
     if shift == 0:
@@ -34,7 +33,6 @@ def calc_bin(x, bin_size, shift):
     remainder = int(x) % bin_size
 
     if remainder > shift:
-        print(x)
         bin_num += 1
 
     return bin_num

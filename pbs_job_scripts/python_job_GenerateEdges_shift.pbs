@@ -14,5 +14,8 @@ cd $PBS_O_WORKDIR
 ##change the input filename if needed
 ##python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/shift-100k/EdgesBin" --metadata "../metadata" --bin-size "1M" --shift "100k"
 python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/shift-100k/EdgesBin" --metadata "../metadata" --bin-size "500k" --shift "100k"
+python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/shift-200k/EdgesBin" --metadata "../metadata" --bin-size "500k" --shift "200k"
+python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/shift-300k/EdgesBin" --metadata "../metadata" --bin-size "500k" --shift "300k"
+python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/shift-400k/EdgesBin" --metadata "../metadata" --bin-size "500k" --shift "400k"
 #
 exit 0
