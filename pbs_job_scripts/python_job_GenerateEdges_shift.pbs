@@ -1,0 +1,18 @@
+#!/bin/bash
+#PBS -q default
+#PBS -N Job_GenerateEdges_shift
+##serial jobs: only 1 processor core is requested
+#PBS -l select=1:mem=4gb:ncpus=6
+#PBS -l walltime=08:00:00
+##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
+#PBS -W group_list=x-ccast-prj-luliu
+#
+##module load python
+#
+cd $PBS_O_WORKDIR
+#
+##change the input filename if needed
+##python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-1M/shift-100k/EdgesBin" --metadata "../metadata" --bin-size "1M" --shift "100k"
+python ../src/preprocessing/GenerateEdges-Shift.py  --input "/gpfs1/scratch/chanaka.cooray/jobs/work/output/chromosomeMap" --output "/gpfs1/scratch/chanaka.cooray/jobs/work/output-500k/shift-100k/EdgesBin" --metadata "../metadata" --bin-size "500k" --shift "100k"
+#
+exit 0

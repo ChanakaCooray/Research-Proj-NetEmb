@@ -1,3 +1,5 @@
+import sys
+
 
 def compare():
     with open('analyze-1M/1CDES_p3.H6', 'r') as file1:

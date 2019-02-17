@@ -7,7 +7,7 @@
 ##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
 #PBS -W group_list=x-ccast-prj-luliu
 #
-#module load python
+##module load python
 #
 cd $PBS_O_WORKDIR
 #

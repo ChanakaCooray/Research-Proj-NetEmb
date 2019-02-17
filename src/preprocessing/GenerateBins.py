@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-def main():
+def generate_bins():
     binSize = 500000
     input = 'metadata/chrom_sizes.txt'
     output = 'metadata/chrom_bins_500k.txt'
@@ -20,7 +20,7 @@ def main():
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
 
-def main2():
+def generate_ranges():
     binSize = 500000
     input = 'metadata/chrom_sizes.txt'
     output = 'metadata/chrom_bins_range_500k.txt'
@@ -45,4 +45,4 @@ def main2():
 
 
 if __name__ == '__main__':
-    main2()
+    generate_ranges()
