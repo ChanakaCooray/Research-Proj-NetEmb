@@ -10,16 +10,19 @@ def main():
     parser.add_argument("--cell-type", required=True)
     parser.add_argument("--metadata", required=True)
     parser.add_argument("--bin-size", required=True)
+    parser.add_argument("--shift", default='0')
 
     args = parser.parse_args()
     analyze_dir = args.analyze_dir
     analyze_cat = args.cell_type
     metadata = args.metadata
     bin_size = args.bin_size
+    shift = args.shift
 
-    # chromBin_file = "metadata/chrom_bins_1M.txt"
-    chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
-    # chrom_bin_range = "metadata/chrom_bins_range_500k.txt"
+    if shift == '0':
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
+    else:
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
 
     bin_range = {}
     with open(chrom_bin_range) as f:

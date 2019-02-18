@@ -82,5 +82,5 @@ if __name__ == '__main__':
     parser.add_argument("--shift", required=True)
 
     args = parser.parse_args()
-    generate_bins(args.bin_size, args.shift)
-    # generate_ranges(args.bin_size, args.shift)
+    # generate_bins(args.bin_size, args.shift)
+    generate_ranges(args.bin_size, args.shift)
