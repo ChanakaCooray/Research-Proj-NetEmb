@@ -101,13 +101,14 @@ def find_bin(coord, start_index, bin_size, shift):
     bin_num = coord // bin_size
     remainder = coord % bin_size
 
+    bin_num += start_index
+
     if shift == 0:
         return bin_num
 
     if remainder >= shift:
         bin_num += 1
 
-    bin_num += start_index
     return bin_num
 
 

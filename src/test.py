@@ -96,10 +96,28 @@ import numpy as np
 import matplotlib
 import seaborn as sns
 
-matplotlib.use('TkAgg')
+bin_size = "500k"
+cell_type = "1CDX1"
+shift = "100k"
 
-a = np.random.random((16, 16))
-print(a)
-# ax = sns.heatmap(a, linewidth=0.5)
-plt.imshow(a)
-plt.show()
+# matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
+# matrix_file = "analyze-{}/SumMatrix/test/sum_matrix_{}_{}test.txt".format(bin_size, bin_size, cell_type)
+matrix_file = "analyze-{}/SumMatrix/test/sum_matrix_{}_{}_shift_{}.txt".format(bin_size, bin_size, cell_type, shift)
+data = np.genfromtxt(matrix_file, delimiter=" ")
+
+np.fill_diagonal(data, 0)
+
+sum_by_row = data.sum(axis=0).astype(int)
+print(sum_by_row.shape)
+print(sum_by_row[6])
+total_sum = sum_by_row.sum(axis=0).astype(int)
+
+print(total_sum)
+
+# matplotlib.use('TkAgg')
+#
+# a = np.random.random((16, 16))
+# print(a)
+# # ax = sns.heatmap(a, linewidth=0.5)
+# plt.imshow(a)
+# plt.show()

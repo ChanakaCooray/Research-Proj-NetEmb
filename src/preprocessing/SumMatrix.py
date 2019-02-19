@@ -13,7 +13,6 @@ def main():
     parser.add_argument("--cell-type", required=True)
     parser.add_argument("--metadata", required=True)
     parser.add_argument("--bin-size", required=True)
-    # parser.add_argument("--size-chromY", required=True)
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--shift", default='0')
 
@@ -23,29 +22,25 @@ def main():
     metadata = args.metadata
     bin_size = args.bin_size
     shift = args.shift
-    # size_chromY = int(args.size_chromY)
     output_dir = args.output_dir
 
-    output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
+    # output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
+
+    # create output directory if not exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
     if shift == '0':
+        output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
     else:
+        output_file = os.path.join(output_dir, "sum_matrix_{}_{}_shift_{}.txt".format(bin_size, analyze_cat, shift))
         chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
 
     # search for last index
     with open(chrom_bin_range) as f:
         for last in f: pass
         n = int(last.split()[3]) + 1
-
-    print(n)
-
-    # if bin_size=="1M":
-    #     n = 2665
-    # elif bin_size=="500k":
-    #     n = 5321
-    # else:
-    #     sys.exit("Bin size is not defined.")
 
     sum_matrix = np.zeros((n, n), dtype=np.int)
     for filename in os.listdir(analyze_dir):
