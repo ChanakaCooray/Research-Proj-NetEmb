@@ -17,13 +17,13 @@ def main():
                             conflict_handler='resolve')
     parser.add_argument("--cell-type", required=True, help='Cell type, Ex: 1CDX1')
     parser.add_argument("--bin-size", required=True, help='Bin size, Ex: 1M, 500k')
+    parser.add_argument("--shift", default='0')
 
     args = parser.parse_args()
 
     cell_type = args.cell_type
     bin_size = args.bin_size
-
-    number_of_cells = 0
+    shift = args.shift
 
     # "1CDX1" (280 cells), "1CDX2" (303 cells), "1CDX3" (262 cells) and "1CDX4" (326 cells))
     if cell_type == "1CDX1":
@@ -49,23 +49,77 @@ def main():
             sum_max = 39006
     elif bin_size == "500k":
         if cell_type == "1CDX1":
-            sum_max = 27539
+            if shift == '0':
+                sum_max = 27539
+            elif shift == '100k':
+                sum_max = 27494
+            elif shift == '200k':
+                sum_max = 27381
+            elif shift == '300k':
+                sum_max = 27378
+            elif shift == '400k':
+                sum_max = 27339
         elif cell_type == "1CDX2":
-            sum_max = 25419
+            if shift == '0':
+                sum_max = 25419
+            elif shift == '100k':
+                sum_max = 25315
+            elif shift == '200k':
+                sum_max = 25339
+            elif shift == '300k':
+                sum_max = 25319
+            elif shift == '400k':
+                sum_max = 25329
         elif cell_type == "1CDX3":
-            sum_max = 39575
+            if shift == '0':
+                sum_max = 39575
+            elif shift == '100k':
+                sum_max = 39607
+            elif shift == '200k':
+                sum_max = 39597
+            elif shift == '300k':
+                sum_max = 39566
+            elif shift == '400k':
+                sum_max = 39548
         elif cell_type == "1CDX4":
-            sum_max = 42029
+            if shift == '0':
+                sum_max = 42029
+            elif shift == '100k':
+                sum_max = 42003
+            elif shift == '200k':
+                sum_max = 42002
+            elif shift == '300k':
+                sum_max = 42013
+            elif shift == '400k':
+                sum_max = 42010
     else:
         sys.exit("Bin size is not defined.")
 
-    matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
-    chrom_bin_range = "metadata/chrom_bins_range_{}.txt".format(bin_size)
-    # output_file = "output/analyze/analyze_sum_matrix/{}/output_sum_matrix_{}_{}_v1.txt".format(bin_size, bin_size,
-    #                                                                                                       cell_type)
-    output_file = "output/analyze/analyze_sum_matrix/{}/threshold-0.1/output_sum_matrix_{}_{}_v1.txt".format(bin_size,
-                                                                                                             bin_size,
-                                                                                                             cell_type)
+    if shift == '0':
+        matrix_file = "analyze-{}/SumMatrix/sum_matrix_{}_{}.txt".format(bin_size, bin_size, cell_type)
+        output_dir = "output/analyze/analyze_sum_matrix/{}".format(bin_size)
+        output_file = os.path.join(output_dir, "output_sum_matrix_{}_{}.txt".format(bin_size, cell_type))
+    else:
+        matrix_file = "analyze-{}/SumMatrix/shift-{}/sum_matrix_{}_{}_shift_{}.txt".format(bin_size, shift, bin_size,
+                                                                                           cell_type, shift)
+        chrom_bin_range = "metadata/chrom_bins_range_{}_shift_{}.txt".format(bin_size, shift)
+        output_dir = "output/analyze/analyze_sum_matrix/{}/shift-{}".format(bin_size, shift)
+        output_file = os.path.join(output_dir,
+                                   "output_sum_matrix_{}_{}_shift_{}.txt".format(bin_size, cell_type, shift))
+
+    # create output directory if not exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # print(shift)
+    # print(sum_max)
+    # print(matrix_file)
+    # print(output_dir)
+    # print(output_file)
+    #
+    # sys.exit(0)
+
+    # output_dir = "output/analyze/analyze_sum_matrix/{}/threshold-0.1".format(bin_size, shift)
 
     bin_range = {}
     with open(chrom_bin_range) as f:
@@ -140,14 +194,14 @@ def main():
             if data[i][j] != 0:
                 value = int(data[i][j])
                 p_value = calculate_f(number_of_cells, value, p_max)
-                # if p_value <= threshold(M):
-                #     count1 += 1
-                #     out.write("{} {} {} {}\n".format(i, j, value, p_value))
+                if p_value <= threshold(M):
+                    count1 += 1
+                    out.write("{} {} {} {}\n".format(i, j, value, p_value))
                 # my_list.append(value)
 
-                if value >= number_of_cells / 10:
-                    count1 += 1
-                    out.write("{} {} {}\n".format(i, j, value, p_value))
+                # if value >= number_of_cells / 10:
+                #     count1 += 1
+                #     out.write("{} {} {}\n".format(i, j, value, p_value))
 
     out.close()
 
