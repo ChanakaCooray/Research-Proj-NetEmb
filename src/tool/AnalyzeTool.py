@@ -48,6 +48,7 @@ def generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size):
         chrom_bin_file = "{}/chrom_bins_{}_shift_{}.txt".format(metadata, bin_size, shift)
 
     bin_size = convert(bin_size)
+    shift = convert(shift)
 
     # store bin indexes
     chrom_bin = {}
