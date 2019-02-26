@@ -62,6 +62,8 @@ def generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size):
         # process_chrom_file(filename, data_dir, chrom_bin, bin_size, output_edge_dir, shift)
         executor.submit(process_chrom_file, filename, data_dir, chrom_bin, bin_size, output_edge_dir, shift)
 
+    executor.shutdown(wait=True)
+
 
 def find_bin(coord, start_index, bin_size, shift):
     bin_num = coord // bin_size
@@ -362,7 +364,7 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
 
-    output_edge_dir = os.path.join(final_output_dir, "temp", "edge_file")
+    output_edge_dir = os.path.join(final_output_dir, "temp", "edge_files")
     metadata = os.path.join(final_output_dir, "temp", "metadata")
 
     # create output directory if not exists
