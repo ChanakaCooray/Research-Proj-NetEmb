@@ -7,6 +7,7 @@ import numpy as np
 import math
 
 
+# process the data file to an edge list file of bins
 def process_chrom_file(filename, data_dir, chrom_bin, bin_size, output_dir, shift):
     print("Processing {}...".format(filename))
     with open(os.path.join(data_dir, filename)) as f:
@@ -40,6 +41,7 @@ def process_chrom_file(filename, data_dir, chrom_bin, bin_size, output_dir, shif
         out.close()
 
 
+# process all the data files concurrently
 def generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size):
     # chromosome bins metadata
     if shift == '0':
@@ -66,6 +68,7 @@ def generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size):
     executor.shutdown(wait=True)
 
 
+# determine the bin for the given coordinate and the sliding window
 def find_bin(coord, start_index, bin_size, shift):
     bin_num = coord // bin_size
     remainder = coord % bin_size
@@ -81,6 +84,7 @@ def find_bin(coord, start_index, bin_size, shift):
     return bin_num
 
 
+# generate the starting bin indices meta file
 def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
     # input = 'metadata/chrom_sizes.txt'
     # output = 'metadata/chrom_bins_{}_shift_{}.txt'.format(bin_size, shift)
@@ -106,6 +110,7 @@ def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
 
+# generate the bin ranges for each chromosome
 def generate_ranges(chrom_sizes_file, metadata, bin_size, shift):
     # input = 'metadata/chrom_sizes.txt'
 
@@ -134,6 +139,7 @@ def generate_ranges(chrom_sizes_file, metadata, bin_size, shift):
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
 
+# generate the maximum sum of all the cells
 def get_max_sum(data_dir, metadata, bin_size, shift):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
@@ -171,6 +177,7 @@ def get_max_sum(data_dir, metadata, bin_size, shift):
     return max_sum
 
 
+# generate the summation matrix
 def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
     # output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
 
@@ -219,6 +226,7 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
     return output_file
 
 
+# generate the final analysis
 def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
@@ -310,6 +318,7 @@ def calculate_pmax(M, sum_max):
     return p_max
 
 
+# helper function to calc nCr
 def nCr(n, r):
     f = math.factorial
     return f(n) // f(r) // f(n - r)
@@ -319,6 +328,7 @@ def threshold(M):
     return 0.05 / M
 
 
+# calculate total number of bins for each chromosome
 def calc_bin(x, bin_size, shift):
     bin_num = int(x) // bin_size
 
@@ -333,6 +343,7 @@ def calc_bin(x, bin_size, shift):
     return bin_num
 
 
+# convert the values like 1M, 500k to real integer values
 def convert(val):
     if val == '0':
         return 0
@@ -353,10 +364,10 @@ def main():
                             formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
     parser.add_argument("--data", required=True, help="Path for the root directory of the data files")
-    parser.add_argument("--output", required=True, help="output directory")
-    parser.add_argument("--bin-size", required=True)
-    parser.add_argument("--sliding-window", default='0')
-    parser.add_argument("--config-file", required=True)
+    parser.add_argument("--output", required=True, help="Output directory")
+    parser.add_argument("--bin-size", required=True, help="Bin size, Eg: 1M, 500k")
+    parser.add_argument("--sliding-window", default='0', help="Sliding windows for the bins")
+    parser.add_argument("--config-file", required=True, help="Config file specifying the chromosome sizes")
 
     args = parser.parse_args()
     data_dir = args.data
@@ -365,6 +376,7 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
 
+    # temp directory to store meta data and temporary output files
     output_edge_dir = os.path.join(final_output_dir, "temp", "edge_files")
     metadata = os.path.join(final_output_dir, "temp", "metadata")
 
@@ -380,20 +392,26 @@ def main():
     if not os.path.exists(final_output_dir):
         os.makedirs(final_output_dir)
 
+    # generate the starting bin indices using the chromosome sizes
     generate_bins(config_file, metadata, bin_size, shift)
+    # generate the bin ranges for each chromosome
     generate_ranges(config_file, metadata, bin_size, shift)
+    # generate the edge list using bin indices
     generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size)
-
+    # get the maximum sum using only inter-chromosome interactions
     max_sum = get_max_sum(output_edge_dir, metadata, bin_size, shift)
+    # generate the summation matrix for all the cells
     sum_matrix = generate_sum_matrix(output_edge_dir, metadata, bin_size, shift,
                                      os.path.join(final_output_dir, "temp", "sum-matrix"))
 
+    # count the number of cells/files in the directory for the analysis calculations
     list = os.listdir(data_dir)
     number_of_cells = len(list)
 
     print(max_sum)
     print(number_of_cells)
 
+    # generate the output file with significant inter-chromosome interactions
     generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir)
 
 
