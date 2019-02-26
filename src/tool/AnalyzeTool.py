@@ -4,6 +4,7 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 import sys
 import pandas as pd
 import numpy as np
+import math
 
 
 def process_chrom_file(filename, data_dir, chrom_bin, bin_size, output_dir, shift):
@@ -39,20 +40,14 @@ def process_chrom_file(filename, data_dir, chrom_bin, bin_size, output_dir, shif
         out.close()
 
 
-def process_data_files(data_dir, final_output_dir, metadata, shift, bin_size):
+def generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size):
     # chromosome bins metadata
-    if shift == 0:
+    if shift == '0':
         chrom_bin_file = "{}/chrom_bins_{}.txt".format(metadata, bin_size)
     else:
         chrom_bin_file = "{}/chrom_bins_{}_shift_{}.txt".format(metadata, bin_size, shift)
 
-    output_edge_dir = os.path.join(final_output_dir, "temp", "edge_file")
-
     bin_size = convert(bin_size)
-
-    # create output directory if not exists
-    if not os.path.exists(output_edge_dir):
-        os.makedirs(output_edge_dir)
 
     # store bin indexes
     chrom_bin = {}
@@ -87,7 +82,7 @@ def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
     # input = 'metadata/chrom_sizes.txt'
     # output = 'metadata/chrom_bins_{}_shift_{}.txt'.format(bin_size, shift)
 
-    if shift == 0:
+    if shift == '0':
         output = os.path.join(metadata, 'chrom_bins_{}.txt'.format(bin_size))
     else:
         output = os.path.join(metadata, 'chrom_bins_{}_shift_{}.txt'.format(bin_size, shift))
@@ -111,7 +106,7 @@ def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
 def generate_ranges(chrom_sizes_file, metadata, bin_size, shift):
     # input = 'metadata/chrom_sizes.txt'
 
-    if shift == 0:
+    if shift == '0':
         output = os.path.join(metadata, 'chrom_bins_range_{}.txt'.format(bin_size))
     else:
         output = os.path.join(metadata, 'chrom_bins_range_{}_shift_{}.txt'.format(bin_size, shift))
@@ -136,6 +131,191 @@ def generate_ranges(chrom_sizes_file, metadata, bin_size, shift):
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
 
+def get_max_sum(data_dir, metadata, bin_size, shift):
+    if shift == '0':
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
+    else:
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
+
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            split_line = line.split()
+            bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
+
+    max_sum = 0
+    for filename in os.listdir(data_dir):
+
+        count = 0
+        with open(os.path.join(data_dir, filename)) as f:
+            for line in f:
+                split_line = line.split()
+                edge1 = int(split_line[0])
+                edge2 = int(split_line[1])
+
+                intra_chrom = False
+                for key, value in bin_range.items():
+                    if value[0] <= edge1 <= value[1]:
+                        if value[0] <= edge2 <= value[1]:
+                            intra_chrom = True
+                            break
+
+                if not intra_chrom:
+                    count += 1
+        if count > max_sum:
+            max_sum = count
+
+    return max_sum
+
+
+def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
+    # output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
+
+    # create output directory if not exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    if shift == '0':
+        output_file = os.path.join(output_dir, "sum_matrix_{}.txt".format(bin_size))
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
+    else:
+        output_file = os.path.join(output_dir, "sum_matrix_{}_shift_{}.txt".format(bin_size, shift))
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
+
+    # search for last index
+    with open(chrom_bin_range) as f:
+        for last in f: pass
+        n = int(last.split()[3]) + 1
+
+    sum_matrix = np.zeros((n, n), dtype=np.int)
+    for filename in os.listdir(data_dir):
+
+        data = {}
+        with open(os.path.join(data_dir, filename)) as f:
+            for line in f:
+                splitLine = line.split()
+                edge1 = int(splitLine[0])
+                edge2 = int(splitLine[1])
+                if edge1 <= edge2:
+                    data[(edge1, edge2)] = 1
+                else:
+                    data[(edge2, edge1)] = 1
+
+        matrix = np.zeros((n, n), dtype=np.int)
+
+        for key, val in data.items():
+            matrix[key[0]][key[1]] = val
+            matrix[key[1]][key[0]] = val
+
+        # np.fill_diagonal(matrix, 0)
+
+        sum_matrix = sum_matrix + matrix
+
+    np.savetxt(output_file, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
+
+    return output_file
+
+
+def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir):
+    if shift == '0':
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
+        output_file = os.path.join(output_dir, "output_sum_matrix_{}.txt".format(bin_size))
+    else:
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
+        output_file = os.path.join(output_dir,
+                                   "output_sum_matrix_{}_shift_{}.txt".format(bin_size, shift))
+
+    # output_dir = "output/analyze/analyze_sum_matrix/{}/threshold-0.1".format(bin_size, shift)
+
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            splitLine = line.split()
+            bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
+
+    data = np.genfromtxt(sum_matrix, delimiter=" ")
+
+    rows = data.shape[0]
+    cols = data.shape[1]
+
+    zero_bins = 0
+    sum_by_row = data.sum(axis=0).astype(int)
+
+    zero_bin_list = {}
+    for i, val in enumerate(sum_by_row):
+        if val == 0:
+            zero_bins += 1
+            for key, value in bin_range.items():
+                if value[0] <= i <= value[1]:
+                    zero_bin_list[i] = key
+
+    df_zero_bin = pd.DataFrame(list(zero_bin_list.items()), columns=['bin', 'chrm'])
+    df_zero_bin_count = df_zero_bin['chrm'].value_counts().reset_index()
+    df_zero_bin_count.columns = ['chrm', 'count']
+    df_zero_bin_count.set_index('chrm', inplace=True)
+
+    # M = ( (N-X)^2 - (n1-x1)^2 - (n2-x2)^2 - ... - (n20-x20)^2 - (n21-x21)^2 )/2
+    sum_reduction = 0  # stores summation of (n2-x2)^2 + ... + (n20-x20)^2 + (n21-x21)^2
+    count_X = 0  # stores X
+    count_N = 0  # stores N
+    for key, value in bin_range.items():
+        n = value[1] - value[0] + 1  # store the number of bins for the chromosome
+        zero_bins_chrm = df_zero_bin_count.loc[key, 'count']  # stores zero bins for the chrm
+        sum_reduction = sum_reduction + (n - zero_bins_chrm) ** 2  # cal (n2-x2)^2 and add that to sum
+        count_X = count_X + zero_bins_chrm
+        count_N = count_N + n
+
+    count = 0
+    for i in range(0, rows):
+        for j in range(0, cols):
+            for key, value in bin_range.items():
+                if value[0] <= i <= value[1]:
+                    if value[0] <= j <= value[1]:
+                        data[i][j] = 0
+                        count += 1
+
+    # unique, counts = np.unique(data, return_counts=True)
+    M = ((count_N - count_X) ** 2 - sum_reduction) / 2
+    count1 = 0
+    p_max = calculate_pmax(M, max_sum)
+    data = np.triu(data, k=-1)
+    out = open(output_file, "w")
+    out.write("{} {} {}\n".format("bin1", "bin2", "count", "p_value"))
+
+    for i in range(0, rows):
+        for j in range(0, cols):
+            if data[i][j] != 0:
+                value = int(data[i][j])
+                p_value = calculate_f(number_of_cells, value, p_max)
+                if p_value <= threshold(M):
+                    count1 += 1
+                    out.write("{} {} {} {}\n".format(i, j, value, p_value))
+
+                # if value >= number_of_cells / 10:
+                #     count1 += 1
+                #     out.write("{} {} {}\n".format(i, j, value, p_value))
+
+    out.close()
+
+
+def calculate_f(n, t, p_max):
+    return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
+
+
+def calculate_pmax(M, sum_max):
+    p_max = sum_max / M
+    return p_max
+
+
+def nCr(n, r):
+    f = math.factorial
+    return f(n) // f(r) // f(n - r)
+
+
+def threshold(M):
+    return 0.05 / M
+
+
 def calc_bin(x, bin_size, shift):
     bin_num = int(x) // bin_size
 
@@ -151,7 +331,7 @@ def calc_bin(x, bin_size, shift):
 
 
 def convert(val):
-    if val == '0' or val == 0:
+    if val == '0':
         return 0
 
     lookup = {'k': 1000, 'M': 1000000, 'B': 1000000000}
@@ -178,18 +358,40 @@ def main():
     args = parser.parse_args()
     data_dir = args.data
     final_output_dir = args.output
-    metadata = os.path.join(final_output_dir, "temp", "metadata")
-    shift = convert(args.sliding_window)
+    shift = args.sliding_window
     config_file = args.config_file
     bin_size = args.bin_size
+
+    output_edge_dir = os.path.join(final_output_dir, "temp", "edge_file")
+    metadata = os.path.join(final_output_dir, "temp", "metadata")
+
+    # create output directory if not exists
+    if not os.path.exists(output_edge_dir):
+        os.makedirs(output_edge_dir)
 
     # create output directory if not exists
     if not os.path.exists(metadata):
         os.makedirs(metadata)
 
+    # create output directory if not exists
+    if not os.path.exists(final_output_dir):
+        os.makedirs(final_output_dir)
+
     generate_bins(config_file, metadata, bin_size, shift)
     generate_ranges(config_file, metadata, bin_size, shift)
-    process_data_files(data_dir, final_output_dir, metadata, shift, bin_size)
+    generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size)
+
+    max_sum = get_max_sum(output_edge_dir, metadata, bin_size, shift)
+    sum_matrix = generate_sum_matrix(output_edge_dir, metadata, bin_size, shift,
+                                     os.path.join(final_output_dir, "temp", "sum-matrix"))
+
+    list = os.listdir(data_dir)
+    number_of_cells = len(list)
+
+    print(max_sum)
+    print(number_of_cells)
+
+    generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir)
 
 
 if __name__ == '__main__':
