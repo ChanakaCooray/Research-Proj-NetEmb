@@ -360,7 +360,7 @@ def convert(val):
 
 
 def main():
-    parser = ArgumentParser("GenerateEdges",
+    parser = ArgumentParser("AnalyzeTool",
                             formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
     parser.add_argument("--data", required=True, help="Path for the root directory of the data files")
@@ -384,7 +384,7 @@ def main():
     if not os.path.exists(output_edge_dir):
         os.makedirs(output_edge_dir)
 
-    # create output directory if not exists
+    # create directory if not exists
     if not os.path.exists(metadata):
         os.makedirs(metadata)
 
