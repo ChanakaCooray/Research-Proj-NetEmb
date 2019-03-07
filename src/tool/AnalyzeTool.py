@@ -226,6 +226,15 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
     return output_file
 
 
+def write_zero_bin_output(df_zero_bin, output_dir, shift, bin_size):
+    if shift == '0':
+        output_file = os.path.join(output_dir, "zero_bin", "zero_bin_{}.txt".format(bin_size))
+    else:
+        output_file = os.path.join(output_dir, "zero_bin", "zero_bin_{}_shift_{}.txt".format(bin_size, shift))
+
+    df_zero_bin.to_csv(output_file, header=None, index=None, sep=' ', mode='w')
+
+
 # generate the final analysis
 def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir):
     if shift == '0':
@@ -261,6 +270,9 @@ def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, num
                     zero_bin_list[i] = key
 
     df_zero_bin = pd.DataFrame(list(zero_bin_list.items()), columns=['bin', 'chrm'])
+
+    write_zero_bin_output(df_zero_bin, output_dir, shift, bin_size)
+
     df_zero_bin_count = df_zero_bin['chrm'].value_counts().reset_index()
     df_zero_bin_count.columns = ['chrm', 'count']
     df_zero_bin_count.set_index('chrm', inplace=True)
