@@ -30,5 +30,10 @@ python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/wor
 python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX3" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --sliding-window "400k" --output "../output/tool-output/1CDX3"
 python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX4" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --sliding-window "400k" --output "../output/tool-output/1CDX4"
 
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --output "../output/tool-output/1CDX1"
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX2" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --output "../output/tool-output/1CDX2"
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX3" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --output "../output/tool-output/1CDX3"
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX4" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --output "../output/tool-output/1CDX4"
+
 #
 exit 0
