@@ -227,7 +227,6 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
 
 
 def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
-
     output_dir_zero_bin = os.path.join(output_dir, "zero_bin")
 
     # create directory if not exists
@@ -263,8 +262,15 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
         chrm_start_index = chrom_bin[chrm_n]
         bin_count = bin_n - chrm_start_index
 
-        start_index = bin_count * bin_size + shift
-        end_index = start_index + bin_size
+        if shift == 0:
+            start_index = bin_count * bin_size
+            end_index = start_index + bin_size - 1
+        elif bin_count != 0:
+            start_index = (bin_count - 1) * bin_size + shift
+            end_index = start_index + bin_size - 1
+        else:
+            start_index = 0
+            end_index = start_index + shift - 1
 
         out.write("{} {} {} {}\n".format(key, val, start_index, end_index))
     out.close()
