@@ -253,7 +253,7 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
     with open(chrom_bin_file) as f:
         for line in f:
             split_line = line.split()
-            chrom_bin[split_line[0]] = split_line[1]
+            chrom_bin[split_line[0]] = int(split_line[1])
 
     out = open(output_file, "w")
     for key, val in zero_bin_list.items():
