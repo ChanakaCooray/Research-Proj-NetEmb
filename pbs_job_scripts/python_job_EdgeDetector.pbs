@@ -11,7 +11,26 @@
 #
 cd $PBS_O_WORKDIR
 #
-##change the input filename if needed
-python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "1" --start-index "2100000" --end-index "2599999" --output "../output/edge-detector-output/1CDX1"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "1" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm1-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "2" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm2-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "3" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm3-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "4" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm4-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "5" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm5-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "6" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm6-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "7" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm7-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "8" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm8-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "9" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm9-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "10" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm10-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "11" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm11-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "12" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm12-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "13" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm13-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "14" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm14-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "15" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm15-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "16" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm16-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "17" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm17-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "18" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm18-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "19" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrm19-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "X" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrmX-0-500k"
+python ../src/tool/EdgeDetector.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --chrm "Y" --start-index "0" --end-index "499999" --output "../output/edge-detector-output/1CDX1/chrmY-0-500k"
 #
 exit 0
