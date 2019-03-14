@@ -19,8 +19,11 @@ def process_chrom_file(filename, data_dir, chrm_num, start_index, end_index, out
             coord1 = int(split_line[1])
             coord2 = int(split_line[3])
 
-            if chrm1 == chrm_num or chrm2 == chrm_num:
-                if start_index <= coord1 <= end_index or start_index <= coord2 <= end_index:
+            if chrm1 == chrm_num:
+                if start_index <= coord1 <= end_index:
+                    entries.append(line)
+            elif chrm2 == chrm_num:
+                if start_index <= coord2 <= end_index:
                     entries.append(line)
 
         if len(entries) > 0:
