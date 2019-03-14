@@ -43,8 +43,8 @@ def generate_data_files(data_dir, output_dir, chrm_num, start_index, end_index):
 
 # convert the values like 1M, 500k to real integer values
 def convert(val):
-    if val == '0':
-        return 0
+    if val.isdigit():
+        return int(val)
 
     lookup = {'k': 1000, 'M': 1000000, 'B': 1000000000}
     unit = val[-1]
