@@ -234,33 +234,28 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
         os.makedirs(output_dir_zero_bin)
 
     if shift == '0':
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
         output_file = os.path.join(output_dir_zero_bin, "zero_bin_{}.txt".format(bin_size))
     else:
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
         output_file = os.path.join(output_dir_zero_bin, "zero_bin_{}_shift_{}.txt".format(bin_size, shift))
 
-    # chromosome bins metadata
-    if shift == '0':
-        chrom_bin_file = "{}/chrom_bins_{}.txt".format(metadata, bin_size)
-    else:
-        chrom_bin_file = "{}/chrom_bins_{}_shift_{}.txt".format(metadata, bin_size, shift)
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            split_line = line.split()
+            bin_range[split_line[0]] = (int(split_line[1]), int(split_line[2]))
 
     bin_size = convert(bin_size)
     shift = convert(shift)
-
-    # store bin indexes
-    chrom_bin = {}
-    with open(chrom_bin_file) as f:
-        for line in f:
-            split_line = line.split()
-            chrom_bin[split_line[0]] = int(split_line[1])
 
     out = open(output_file, "w")
     for key, val in zero_bin_list.items():
         bin_n = key
         chrm_n = val
 
-        chrm_start_index = chrom_bin[chrm_n]
-        bin_count = bin_n - chrm_start_index
+        chrm_info = bin_range[chrm_n]
+        bin_count = bin_n - chrm_info[1]
 
         if shift == 0:
             start_index = bin_count * bin_size
@@ -271,6 +266,9 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
         else:
             start_index = 0
             end_index = start_index + shift - 1
+
+        if end_index >= chrm_info[0]:
+            end_index = chrm_info[0] - 1
 
         out.write("{} {} {} {}\n".format(key, val, start_index, end_index))
     out.close()
