@@ -65,8 +65,8 @@ def parse_file(file, data_dir, output_dir):
             split_line = line.split()
 
             chrm_num = split_line[1]
-            start_index = split_line[2]
-            end_index = split_line[3]
+            start_index = convert(split_line[2])
+            end_index = convert(split_line[3])
 
             output_dir_line = os.path.join(output_dir, "chrm{}_{}_{}".format(chrm_num, start_index, end_index))
 
