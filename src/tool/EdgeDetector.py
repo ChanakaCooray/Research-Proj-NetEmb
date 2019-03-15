@@ -40,7 +40,6 @@ def generate_data_files(data_dir, output_dir, chrm_num, start_index, end_index):
     executor = ThreadPoolExecutor(40)
     for filename in os.listdir(data_dir):
         executor.submit(process_chrom_file, filename, data_dir, chrm_num, start_index, end_index, output_dir)
-
     executor.shutdown(wait=True)
 
 
@@ -60,19 +59,44 @@ def convert(val):
     return int(val)
 
 
+def parse_file(file, data_dir, output_dir):
+    with open(file) as f:
+        for line in f:
+            split_line = line.split()
+
+            chrm_num = split_line[1]
+            start_index = split_line[2]
+            end_index = split_line[3]
+
+            output_dir_line = os.path.join(output_dir, "chrm{}_{}_{}".format(chrm_num, start_index, end_index))
+
+            # create output directory if not exists
+            if not os.path.exists(output_dir_line):
+                os.makedirs(output_dir_line)
+
+            generate_data_files(data_dir, output_dir_line, chrm_num, start_index, end_index)
+
+
 def main():
     parser = ArgumentParser("EdgeDetector",
                             formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
+    parser.add_argument("--file", default='None', help="A file containing all the ranges to check")
     parser.add_argument("--data", required=True, help="Path for the root directory of the data files")
     parser.add_argument("--output", required=True, help="Output directory")
-    parser.add_argument("--chrm", required=True, help="Chromosome Number")
-    parser.add_argument("--start-index", required=True, help="Start index of the range, Ex: 500k, 1.5M")
-    parser.add_argument("--end-index", required=True, help="End index of the range, Ex: 500k, 1.5M")
+    parser.add_argument("--chrm", required=False, help="Chromosome Number")
+    parser.add_argument("--start-index", required=False, help="Start index of the range, Ex: 500k, 1.5M")
+    parser.add_argument("--end-index", required=False, help="End index of the range, Ex: 500k, 1.5M")
 
     args = parser.parse_args()
     data_dir = args.data
     output_dir = args.output
+    file = args.file
+
+    if file != 'None':
+        parse_file(file, data_dir, output_dir)
+        return
+
     chrm_num = args.chrm
     start_index = convert(args.start_index)
     end_index = convert(args.end_index)
