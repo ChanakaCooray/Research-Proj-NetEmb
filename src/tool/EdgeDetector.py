@@ -60,7 +60,6 @@ def convert(val):
 
 
 def parse_file(file, data_dir, output_dir):
-    executor = ThreadPoolExecutor(40)
     with open(file) as f:
         for line in f:
             split_line = line.split()
@@ -75,8 +74,7 @@ def parse_file(file, data_dir, output_dir):
             if not os.path.exists(output_dir_line):
                 os.makedirs(output_dir_line)
 
-            executor.submit(generate_data_files, data_dir, output_dir_line, chrm_num, start_index, end_index)
-    executor.shutdown(wait=True)
+            generate_data_files(data_dir, output_dir_line, chrm_num, start_index, end_index)
 
 
 def main():
