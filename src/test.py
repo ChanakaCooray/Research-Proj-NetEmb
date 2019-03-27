@@ -135,20 +135,23 @@ def a(i):
 
 def main():
     # global master_list
-    executor = ThreadPoolExecutor(40)
-
-    i = [4, 5, 7]
+    # executor = ThreadPoolExecutor(40)
+    #
+    # i = [4, 5, 7]
 
     # for i in range(1,3):
     # master_list = list(executor.map(a, i))
 
-    b = list(executor.map(a, i))
-
-    print(b)
+    # b = list(executor.map(a, i))
+    #
+    # print(b)
 
     # print(master_list)
     # executor.submit(a)
     # executor.submit(a)
+
+    for i in range(5,10):
+        print(i)
 
 
 if __name__ == '__main__':

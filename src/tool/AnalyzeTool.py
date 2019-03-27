@@ -277,7 +277,8 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
 
 
 # generate the final analysis
-def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir):
+def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir,
+                             threshold_percentage):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
         output_file = os.path.join(output_dir, "output_sum_matrix_{}.txt".format(bin_size))
@@ -350,20 +351,25 @@ def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, num
         for j in range(0, cols):
             if data[i][j] != 0:
                 value = int(data[i][j])
-                p_value = calculate_f(number_of_cells, value, p_max)
-                if p_value <= threshold(M):
+                p_value = calculate_f_sum(number_of_cells, value, p_max)
+                if p_value <= threshold(M) and value >= number_of_cells * threshold_percentage:
                     count1 += 1
                     out.write("{} {} {} {}\n".format(i, j, value, p_value))
-
-                # if value >= number_of_cells / 10:
-                #     count1 += 1
-                #     out.write("{} {} {}\n".format(i, j, value, p_value))
 
     out.close()
 
 
 def calculate_f(n, t, p_max):
     return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
+
+
+def calculate_f_sum(n, t, p_max):
+    sum_f = 0
+
+    for i in range(t, n):
+        sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
+
+    return sum_f
 
 
 def calculate_pmax(M, sum_max):
@@ -421,6 +427,7 @@ def main():
     parser.add_argument("--bin-size", required=True, help="Bin size, Eg: 1M, 500k")
     parser.add_argument("--sliding-window", default='0', help="Sliding windows for the bins")
     parser.add_argument("--config-file", required=True, help="Config file specifying the chromosome sizes")
+    parser.add_argument("--threshold", default='0.1', help="Threshold as a percentage of the cells, Eg: 0.1, 0.2")
 
     args = parser.parse_args()
     data_dir = args.data
@@ -428,6 +435,7 @@ def main():
     shift = args.sliding_window
     config_file = args.config_file
     bin_size = args.bin_size
+    threshold_percentage = args.threshold
 
     # temp directory to store meta data and temporary output files
     output_edge_dir = os.path.join(final_output_dir, "temp", "edge_files")
@@ -465,7 +473,8 @@ def main():
     print(number_of_cells)
 
     # generate the output file with significant inter-chromosome interactions
-    generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir)
+    generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir,
+                             threshold_percentage)
 
 
 if __name__ == '__main__':
