@@ -10,7 +10,7 @@
 #
 cd $PBS_O_WORKDIR
 #
-python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX4" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --sliding-window "100k" --output "../output/tool-output/500k/1CDX4"
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX4" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --sliding-window "100k" --output "../output/tool-output/500k/1CDX4/100k"
 
 #
 exit 0
