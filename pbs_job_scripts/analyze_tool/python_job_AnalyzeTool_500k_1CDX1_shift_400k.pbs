@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -q default
+#PBS -N Job_AnalyzeTool_500k
+##serial jobs: only 1 processor core is requested
+#PBS -l select=1:mem=8gb:ncpus=4
+#PBS -l walltime=08:00:00
+##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
+#PBS -W group_list=x-ccast-prj-luliu
+#
+#
+cd $PBS_O_WORKDIR
+#
+python ../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/output/1CDX1" --bin-size "500k" --config-file "../metadata/chrom_sizes.txt" --sliding-window "400k" --output "../output/tool-output/500k/1CDX1"
+
+#
+exit 0

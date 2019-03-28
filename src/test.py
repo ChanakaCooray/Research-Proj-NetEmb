@@ -1,4 +1,6 @@
 # import pandas as pd
+import math
+import time
 #
 # metaDip2iFile = "metadata/Diploids_2i.txt"
 #
@@ -132,8 +134,42 @@ def a(i):
     l = [i+1, i-1]
     return l
 
+def calculate_f_sum(n, t, p_max):
+    sum_f = 0
+
+    for i in range(t, n):
+        # print(i)
+        sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
+
+    return sum_f
+
+
+def calculate_pmax(M, sum_max):
+    p_max = sum_max / M
+    return p_max
+
+def calculate_f(n, t, p_max):
+    return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
+
+
+# helper function to calc nCr
+def nCr(n, r):
+    f = math.factorial
+    return f(n) // f(r) // f(n - r)
 
 def main():
+    start = time.time()
+    x = calculate_f_sum(5, 2, 0.4)
+    end = time.time()
+    print(end - start)
+
+    start = time.time()
+    y = calculate_f(5, 2, 0.4)
+    end = time.time()
+    print(end - start)
+
+    print(x)
+    print(y)
     # global master_list
     # executor = ThreadPoolExecutor(40)
     #
@@ -149,10 +185,6 @@ def main():
     # print(master_list)
     # executor.submit(a)
     # executor.submit(a)
-
-    for i in range(5,10):
-        print(i)
-
 
 if __name__ == '__main__':
     main()

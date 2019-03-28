@@ -345,14 +345,14 @@ def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, num
     p_max = calculate_pmax(M, max_sum)
     data = np.triu(data, k=-1)
     out = open(output_file, "w")
-    out.write("{} {} {}\n".format("bin1", "bin2", "count", "p_value"))
+    out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
     for i in range(0, rows):
         for j in range(0, cols):
             if data[i][j] != 0:
                 value = int(data[i][j])
                 p_value = calculate_f_sum(number_of_cells, value, p_max)
-                if p_value <= threshold(M) and value >= number_of_cells * threshold_percentage:
+                if p_value <= threshold(M):
                     count1 += 1
                     out.write("{} {} {} {}\n".format(i, j, value, p_value))
 
