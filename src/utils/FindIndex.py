@@ -100,6 +100,8 @@ if __name__ == '__main__':
     for i in range(1, 5):
         find_index("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k.txt".format(i), "metadata", "500k", "0",
                    "circos-output/circos-input/input_1CDX{}_500k.txt".format(i))
+        find_index("output/tool-output/v2/1M/1CDX{}/output_sum_matrix_1M.txt".format(i), "metadata", "1M", "0",
+                   "circos-output/circos-input/input_1CDX{}_1M.txt".format(i))
 
     for i in range(1, 5):
         for j in range(1, 5):
