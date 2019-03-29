@@ -91,11 +91,19 @@ def find_index(filename, metadata, bin_size, shift, output_file):
             #                                  bin2_end_index))
 
             out.write("{} {} {} {} {} {} {}\n".format("mm" + chrm1, bin1_start_index, bin1_end_index, "mm" + chrm2,
-                                                    bin2_start_index, bin2_end_index, "color=black"))
+                                                      bin2_start_index, bin2_end_index, "color=black"))
 
     out.close()
 
 
 if __name__ == '__main__':
-    find_index("output/tool-output/v2/500k/1CDX1/output_sum_matrix_500k.txt", "metadata", "500k", "0",
-               "circos-metadata/circos-input/output_sum_matrix_1CDX1_500k.txt")
+    for i in range(1, 5):
+        find_index("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k.txt".format(i), "metadata", "500k", "0",
+                   "circos-output/circos-input/input_1CDX{}_500k.txt".format(i))
+
+    for i in range(1, 5):
+        for j in range(1, 5):
+            find_index("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k_shift_{}k.txt".format(i, j * 100),
+                       "metadata", "500k",
+                       "{}k".format(j * 100),
+                       "circos-output/circos-input/input_1CDX{}_500k_shift_{}k.txt".format(i, j * 100))
