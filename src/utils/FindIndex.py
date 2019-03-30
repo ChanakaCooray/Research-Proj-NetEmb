@@ -17,7 +17,7 @@ def convert(val):
     return int(val)
 
 
-def find_index(filename, metadata, bin_size, shift, output_file):
+def convert_bins(filename, metadata, bin_size, shift, output_file):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
     else:
@@ -87,25 +87,49 @@ def find_index(filename, metadata, bin_size, shift, output_file):
             if bin2_end_index >= chrm2_size:
                 bin2_end_index = chrm2_size - 1
 
-            # print("{} {} {} {} {} {}".format(bin1, bin2, bin1_start_index, bin1_end_index, bin2_start_index,
-            #                                  bin2_end_index))
-
-            out.write("{} {} {} {} {} {} {}\n".format("mm" + chrm1, bin1_start_index, bin1_end_index, "mm" + chrm2,
-                                                      bin2_start_index, bin2_end_index, "color=black"))
+            convert_range(out, chrm1, bin1_start_index, bin1_end_index, chrm2, bin2_start_index, bin2_end_index)
 
     out.close()
 
 
+def convert_circos(out, chrm1, bin1_start_index, bin1_end_index, chrm2, bin2_start_index, bin2_end_index):
+    out.write("{} {} {} {} {} {} {}\n".format("mm" + chrm1, bin1_start_index, bin1_end_index, "mm" + chrm2,
+                                              bin2_start_index, bin2_end_index, "color=black"))
+
+
+def convert_range(out, chrm1, bin1_start_index, bin1_end_index, chrm2, bin2_start_index, bin2_end_index):
+    out.write("{} {} {} {} {} {}\n".format(chrm1, bin1_start_index, bin1_end_index, chrm2,
+                                              bin2_start_index, bin2_end_index))
+
+
 if __name__ == '__main__':
+    # for i in range(1, 5):
+    #     convert_bins("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k.txt".format(i), "metadata", "500k", "0",
+    #                  "circos-output/circos-input/input_1CDX{}_500k.txt".format(i))
+    #     convert_bins("output/tool-output/v2/1M/1CDX{}/output_sum_matrix_1M.txt".format(i), "metadata", "1M", "0",
+    #                  "circos-output/circos-input/input_1CDX{}_1M.txt".format(i))
+    #
+    # for i in range(1, 5):
+    #     for j in range(1, 5):
+    #         convert_bins("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k_shift_{}k.txt".format(i, j * 100),
+    #                      "metadata", "500k",
+    #                      "{}k".format(j * 100),
+    #                      "circos-output/circos-input/input_1CDX{}_500k_shift_{}k.txt".format(i, j * 100))
+
+    output_dir = "output/range_output"
+    # create output directory if not exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for i in range(1, 5):
-        find_index("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k.txt".format(i), "metadata", "500k", "0",
-                   "circos-output/circos-input/input_1CDX{}_500k.txt".format(i))
-        find_index("output/tool-output/v2/1M/1CDX{}/output_sum_matrix_1M.txt".format(i), "metadata", "1M", "0",
-                   "circos-output/circos-input/input_1CDX{}_1M.txt".format(i))
+        convert_bins("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k.txt".format(i), "metadata", "500k", "0",
+                     "output/range_output/output_1CDX{}_500k.txt".format(i))
+        convert_bins("output/tool-output/v2/1M/1CDX{}/output_sum_matrix_1M.txt".format(i), "metadata", "1M", "0",
+                     "output/range_output/output_1CDX{}_1M.txt".format(i))
 
     for i in range(1, 5):
         for j in range(1, 5):
-            find_index("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k_shift_{}k.txt".format(i, j * 100),
-                       "metadata", "500k",
-                       "{}k".format(j * 100),
-                       "circos-output/circos-input/input_1CDX{}_500k_shift_{}k.txt".format(i, j * 100))
+            convert_bins("output/tool-output/v2/500k/1CDX{}/output_sum_matrix_500k_shift_{}k.txt".format(i, j * 100),
+                         "metadata", "500k",
+                         "{}k".format(j * 100),
+                         "output/range_output/output_1CDX{}_500k_shift_{}k.txt".format(i, j * 100))
