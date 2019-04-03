@@ -131,8 +131,9 @@ def a(i):
     # print("1")
     # print("2")
     # print("3")
-    l = [i+1, i-1]
+    l = [i + 1, i - 1]
     return l
+
 
 def calculate_f_sum(n, t, p_max):
     sum_f = 0
@@ -148,6 +149,7 @@ def calculate_pmax(M, sum_max):
     p_max = sum_max / M
     return p_max
 
+
 def calculate_f(n, t, p_max):
     return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
 
@@ -157,19 +159,25 @@ def nCr(n, r):
     f = math.factorial
     return f(n) // f(r) // f(n - r)
 
+
 def main():
-    start = time.time()
-    x = calculate_f_sum(5, 2, 0.4)
-    end = time.time()
-    print(end - start)
+    # start = time.time()
+    # x = calculate_f_sum(5, 2, 0.4)
+    # end = time.time()
+    # print(end - start)
+    #
+    # start = time.time()
+    # y = calculate_f(5, 2, 0.4)
+    # end = time.time()
+    # print(end - start)
 
-    start = time.time()
-    y = calculate_f(5, 2, 0.4)
-    end = time.time()
-    print(end - start)
+    a = 5
+    b = 2
 
-    print(x)
-    print(y)
+    print(a / b)
+
+    # print(x)
+    # print(y)
     # global master_list
     # executor = ThreadPoolExecutor(40)
     #
@@ -185,6 +193,7 @@ def main():
     # print(master_list)
     # executor.submit(a)
     # executor.submit(a)
+
 
 if __name__ == '__main__':
     main()
