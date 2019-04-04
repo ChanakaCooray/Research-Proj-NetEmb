@@ -5,6 +5,7 @@ import sys
 import pandas as pd
 import numpy as np
 import math
+from scipy.stats import binom
 
 
 # process the data file to an edge list file of bins
@@ -313,7 +314,7 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
 
 
 # generate the final analysis
-def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, output_dir,
+def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, output_dir,
                              threshold_percentage):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
@@ -378,7 +379,7 @@ def generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, num
     # unique, counts = np.unique(data, return_counts=True)
     M = ((count_N - count_X) ** 2 - sum_reduction) / 2
     count1 = 0
-    p_max = calculate_pmax(M, max_sum)
+    p_max = calculate_pmax(M, sum_value)
     data = np.triu(data, k=-1)
     out = open(output_file, "w")
     out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
@@ -400,16 +401,18 @@ def calculate_f(n, t, p_max):
 
 
 def calculate_f_sum(n, t, p_max):
-    sum_f = 0
+    # sum_f = 0
+    #
+    # for i in range(t, n):
+    #     sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
 
-    for i in range(t, n):
-        sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
+    sum_f = 1 - binom.cdf(t - 1, n, p_max)
 
     return sum_f
 
 
-def calculate_pmax(M, sum_max):
-    p_max = sum_max / M
+def calculate_pmax(M, sum_value):
+    p_max = sum_value / M
     return p_max
 
 
@@ -500,17 +503,17 @@ def main():
     # generate the edge list using bin indices
     generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size)
     # get the maximum sum using only inter-chromosome interactions
-    # max_sum = get_max_sum(output_edge_dir, metadata, bin_size, shift)
-    mean = get_mean(output_edge_dir, metadata, bin_size, shift, number_of_cells)
+    max_sum = get_max_sum(output_edge_dir, metadata, bin_size, shift)
+    # mean = get_mean(output_edge_dir, metadata, bin_size, shift, number_of_cells)
     # generate the summation matrix for all the cells
     sum_matrix = generate_sum_matrix(output_edge_dir, metadata, bin_size, shift,
                                      os.path.join(final_output_dir, "temp", "sum-matrix"))
 
-    print(mean)
+    print(max_sum)
     print(number_of_cells)
 
     # generate the output file with significant inter-chromosome interactions
-    generate_analyzed_output(sum_matrix, mean, metadata, bin_size, shift, number_of_cells, final_output_dir,
+    generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir,
                              threshold_percentage)
 
 

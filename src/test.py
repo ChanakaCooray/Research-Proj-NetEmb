@@ -1,6 +1,7 @@
 # import pandas as pd
 import math
 import time
+from scipy.stats import binom
 #
 # metaDip2iFile = "metadata/Diploids_2i.txt"
 #
@@ -138,7 +139,7 @@ def a(i):
 def calculate_f_sum(n, t, p_max):
     sum_f = 0
 
-    for i in range(t, n):
+    for i in range(t, n + 1):
         # print(i)
         sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
 
@@ -148,6 +149,20 @@ def calculate_f_sum(n, t, p_max):
 def calculate_pmax(M, sum_max):
     p_max = sum_max / M
     return p_max
+
+
+def calculate_f_sum2(n, t, p_max):
+    # sum_f = 0
+    #
+    # for i in range(t, n + 1):
+    #     # print(i)
+    #     p_value = 1-binom.cdf(i-1, n, p_max)
+    #     sum_f += p_value
+    #     # sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
+
+    sum_f = 1 - binom.cdf(t-1, n, p_max)
+
+    return sum_f
 
 
 def calculate_f(n, t, p_max):
@@ -165,16 +180,17 @@ def main():
     # x = calculate_f_sum(5, 2, 0.4)
     # end = time.time()
     # print(end - start)
-    #
+    # #
     # start = time.time()
-    # y = calculate_f(5, 2, 0.4)
+    # y = calculate_f_sum2(5, 2, 0.4)
     # end = time.time()
     # print(end - start)
 
-    a = 5
-    b = 2
+    x = calculate_f_sum(5, 2, 0.4)
+    x2 = calculate_f_sum2(5, 2, 0.4)
 
-    print(a / b)
+    print(x)
+    print(x2)
 
     # print(x)
     # print(y)
