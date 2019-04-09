@@ -513,9 +513,7 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
     threshold_percentage = args.threshold
-    p_value_user = args.p_value
-
-    print(p_value_user)
+    p_value_user = float(args.p_value)
 
     if args.low:
         level = "low"
