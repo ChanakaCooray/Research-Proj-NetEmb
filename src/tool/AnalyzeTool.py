@@ -353,6 +353,7 @@ def write_zero_bin_output(zero_bin_list, output_dir, shift, bin_size, metadata):
 
 # generate the final analysis
 def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, output_dir,
+                             p_value_user,
                              threshold_percentage):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
@@ -427,7 +428,7 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
             if data[i][j] != 0:
                 value = int(data[i][j])
                 p_value = calculate_f_sum(number_of_cells, value, p_max)
-                if p_value <= threshold(M):
+                if p_value <= threshold(M, p_value_user):
                     count1 += 1
                     out.write("{} {} {} {}\n".format(i, j, value, p_value))
 
@@ -455,8 +456,8 @@ def nCr(n, r):
     return f(n) // f(r) // f(n - r)
 
 
-def threshold(M):
-    return 0.05 / M
+def threshold(M, p_value_user):
+    return p_value_user / M
 
 
 # calculate total number of bins for each chromosome
@@ -503,6 +504,7 @@ def main():
     parser.add_argument("--low", action='store_true', default=False)
     parser.add_argument("--medium", action='store_true', default=False)
     parser.add_argument("--high", action='store_true', default=False)
+    parser.add_argument("--p-value", default='0.05', help="P Value")
 
     args = parser.parse_args()
     data_dir = args.data
@@ -511,6 +513,9 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
     threshold_percentage = args.threshold
+    p_value_user = args.p_value
+
+    print(p_value_user)
 
     if args.low:
         level = "low"
@@ -562,7 +567,7 @@ def main():
 
     # generate the output file with significant inter-chromosome interactions
     generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, final_output_dir,
-                             threshold_percentage)
+                             p_value_user, threshold_percentage)
 
 
 if __name__ == '__main__':
