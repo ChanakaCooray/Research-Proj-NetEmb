@@ -178,6 +178,44 @@ def get_max_sum(data_dir, metadata, bin_size, shift):
     return max_sum
 
 
+# generate the minimum sum of all the cells
+def get_min_sum(data_dir, metadata, bin_size, shift):
+    if shift == '0':
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
+    else:
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
+
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            split_line = line.split()
+            bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
+
+    min_sum = 0
+    for filename in os.listdir(data_dir):
+
+        count = 0
+        with open(os.path.join(data_dir, filename)) as f:
+            for line in f:
+                split_line = line.split()
+                edge1 = int(split_line[0])
+                edge2 = int(split_line[1])
+
+                intra_chrom = False
+                for key, value in bin_range.items():
+                    if value[0] <= edge1 <= value[1]:
+                        if value[0] <= edge2 <= value[1]:
+                            intra_chrom = True
+                            break
+
+                if not intra_chrom:
+                    count += 1
+        if count < min_sum or min_sum == 0:
+            min_sum = count
+
+    return min_sum
+
+
 # generate the mean of sum values of all the cells
 def get_mean(data_dir, metadata, bin_size, shift, number_of_cells):
     if shift == '0':
@@ -400,14 +438,9 @@ def calculate_f(n, t, p_max):
     return nCr(n, t) * (p_max ** t) * ((1 - p_max) ** (n - t))
 
 
+# calculate f sum using binomial function
 def calculate_f_sum(n, t, p_max):
-    # sum_f = 0
-    #
-    # for i in range(t, n):
-    #     sum_f += nCr(n, i) * (p_max ** i) * ((1 - p_max) ** (n - i))
-
     sum_f = 1 - binom.cdf(t - 1, n, p_max)
-
     return sum_f
 
 
@@ -467,6 +500,9 @@ def main():
     parser.add_argument("--sliding-window", default='0', help="Sliding windows for the bins")
     parser.add_argument("--config-file", required=True, help="Config file specifying the chromosome sizes")
     parser.add_argument("--threshold", default='0.1', help="Threshold as a percentage of the cells, Eg: 0.1, 0.2")
+    parser.add_argument("--low", action='store_true', default=False)
+    parser.add_argument("--medium", action='store_true', default=False)
+    parser.add_argument("--high", action='store_true', default=False)
 
     args = parser.parse_args()
     data_dir = args.data
@@ -475,6 +511,13 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
     threshold_percentage = args.threshold
+
+    if args.low:
+        level = "low"
+    elif args.medium:
+        level = "medium"
+    else:
+        level = "high"
 
     # temp directory to store meta data and temporary output files
     output_edge_dir = os.path.join(final_output_dir, "temp", "edge_files")
@@ -503,17 +546,22 @@ def main():
     # generate the edge list using bin indices
     generate_data_files(data_dir, output_edge_dir, metadata, shift, bin_size)
     # get the maximum sum using only inter-chromosome interactions
-    max_sum = get_max_sum(output_edge_dir, metadata, bin_size, shift)
-    # mean = get_mean(output_edge_dir, metadata, bin_size, shift, number_of_cells)
+
+    if level == "high":
+        sum_value = get_max_sum(output_edge_dir, metadata, bin_size, shift)
+    elif level == "medium":
+        sum_value = get_mean(output_edge_dir, metadata, bin_size, shift, number_of_cells)
+    else:
+        sum_value = get_min_sum(output_edge_dir, metadata, bin_size, shift)
+
     # generate the summation matrix for all the cells
     sum_matrix = generate_sum_matrix(output_edge_dir, metadata, bin_size, shift,
                                      os.path.join(final_output_dir, "temp", "sum-matrix"))
 
-    print(max_sum)
-    print(number_of_cells)
+    print("Sum Value: {}".format(sum_value))
 
     # generate the output file with significant inter-chromosome interactions
-    generate_analyzed_output(sum_matrix, max_sum, metadata, bin_size, shift, number_of_cells, final_output_dir,
+    generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, final_output_dir,
                              threshold_percentage)
 
 
