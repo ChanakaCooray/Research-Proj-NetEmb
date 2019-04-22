@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
+import sys
 
 
-def generate_bins():
-    binSize = 500000
+def generate_bins(binSize_Str):
     input = 'metadata/chrom_sizes.txt'
-    output = 'metadata/chrom_bins_500k.txt'
+    output = 'metadata/chrom_bins_{}.txt'.format(binSize_Str)
+
+    binSize = convert(binSize_Str)
 
     df = pd.read_csv(input, sep="\t", header=None, names=["chrm", "size"])
     df['size'] = df['size'].apply(lambda x: int(x) // binSize)
@@ -20,10 +22,11 @@ def generate_bins():
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
 
-def generate_ranges():
-    binSize = 500000
+def generate_ranges(binSize_Str):
     input = 'metadata/chrom_sizes.txt'
-    output = 'metadata/chrom_bins_range_500k.txt'
+    output = 'metadata/chrom_bins_range_{}.txt'.format(binSize_Str)
+
+    binSize = convert(binSize_Str)
 
     df = pd.read_csv(input, sep="\t", header=None, names=["chrm", "size"])
     df['start'] = df['size'].apply(lambda x: int(x) // binSize)
@@ -41,8 +44,23 @@ def generate_ranges():
 
     df.to_csv(output, header=None, index=None, sep=' ', mode='w')
 
-    # print(df)
+
+# convert the values like 1M, 500k to real integer values
+def convert(val):
+    if val == '0':
+        return 0
+
+    lookup = {'k': 1000, 'M': 1000000, 'B': 1000000000}
+    unit = val[-1]
+    try:
+        number = int(val[:-1])
+    except ValueError:
+        sys.exit("Value Error.")
+    if unit in lookup:
+        return lookup[unit] * number
+    return int(val)
 
 
 if __name__ == '__main__':
-    generate_ranges()
+    generate_bins("40k")
+    generate_ranges("40k")
