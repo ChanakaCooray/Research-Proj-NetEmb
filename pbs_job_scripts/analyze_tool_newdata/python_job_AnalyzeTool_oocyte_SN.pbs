@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -q default
-#PBS -N Job_AnalyzeTool_oocyte_SN_Hoechst
+#PBS -N Job_AnalyzeTool_oocyte_SN
 ##serial jobs: only 1 processor core is requested
 #PBS -l select=1:mem=8gb:ncpus=4
 #PBS -l walltime=72:00:00
