@@ -357,11 +357,11 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
                              threshold_percentage):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
-        output_file = os.path.join(output_dir, "output_sum_matrix_{}.txt".format(bin_size))
+        output_file = os.path.join(output_dir, "output_{}.txt".format(bin_size))
     else:
         chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
         output_file = os.path.join(output_dir,
-                                   "output_sum_matrix_{}_shift_{}.txt".format(bin_size, shift))
+                                   "output_{}_shift_{}.txt".format(bin_size, shift))
 
     # output_dir = "output/analyze/analyze_sum_matrix/{}/threshold-0.1".format(bin_size, shift)
 
