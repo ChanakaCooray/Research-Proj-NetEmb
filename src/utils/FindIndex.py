@@ -87,7 +87,7 @@ def convert_bins(filename, metadata, bin_size, shift, output_file):
             if bin2_end_index >= chrm2_size:
                 bin2_end_index = chrm2_size - 1
 
-            convert_circos(out, chrm1, bin1_start_index, bin1_end_index, chrm2, bin2_start_index, bin2_end_index)
+            convert_range(out, chrm1, bin1_start_index, bin1_end_index, chrm2, bin2_start_index, bin2_end_index)
 
     out.close()
 
@@ -134,46 +134,85 @@ if __name__ == '__main__':
     #                      "{}k".format(j * 100),
     #                      "output/range_output/output_1CDX{}_500k_shift_{}k.txt".format(i, j * 100))
 
-    bin_list = ["1M", "500k", "200k"]
+    # bin_list = ["1M", "500k", "200k"]
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/oocyte_NSN/oocyte_NSN/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_oocyte_NSN_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/oocyte_SN/oocyte_SN/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_oocyte_SN_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins(
+    #         "output/tool-output-newdata/oocyte_NSN/oocyte_NSN_Hoechst/{}/output_sum_matrix_{}.txt".format(i, i),
+    #         "metadata", i, "0",
+    #         os.path.join(output_dir, "input_oocyte_NSN_Hoechst_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins(
+    #         "output/tool-output-newdata/oocyte_SN/oocyte_SN_Hoechst/{}/output_sum_matrix_{}.txt".format(i, i),
+    #         "metadata", i, "0",
+    #         os.path.join(output_dir, "input_oocyte_SN_Hoechst_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/pronucleus_female/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_pronucleus_female_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/pronucleus_male/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_pronucleus_male_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/oocyte_SN/oocyte_SN_all/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_oocyte_SN_all_{}.txt".format(i)))
+    #
+    # for i in bin_list:
+    #     convert_bins("output/tool-output-newdata/oocyte_NSN/oocyte_NSN_all/{}/output_sum_matrix_{}.txt".format(i, i),
+    #                  "metadata", i, "0",
+    #                  os.path.join(output_dir, "input_oocyte_NSN_all_{}.txt".format(i)))
 
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/oocyte_NSN/oocyte_NSN/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_oocyte_NSN_{}.txt".format(i)))
+    convert_bins("output/tool-output-newdata2/oocyte_NSN/high/output_sum_matrix_500k.txt", "metadata", "500k", "0",
+                 "output/range_output2/output_oocyte_NSN_500k.txt")
+    convert_bins("output/tool-output-newdata2/oocyte_SN/high/output_sum_matrix_500k.txt", "metadata", "500k", "0",
+                 "output/range_output2/output_oocyte_SN_500k.txt")
+    convert_bins("output/tool-output-newdata2/pronucleus_female/high/output_sum_matrix_500k.txt", "metadata", "500k",
+                 "0",
+                 "output/range_output2/output_pronucleus_female_500k.txt")
+    convert_bins("output/tool-output-newdata2/pronucleus_male/high/output_sum_matrix_500k.txt", "metadata", "500k", "0",
+                 "output/range_output2/output_pronucleus_male_500k.txt")
 
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/oocyte_SN/oocyte_SN/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_oocyte_SN_{}.txt".format(i)))
-
-    for i in bin_list:
+    for i in range(1, 5):
         convert_bins(
-            "output/tool-output-newdata/oocyte_NSN/oocyte_NSN_Hoechst/{}/output_sum_matrix_{}.txt".format(i, i),
-            "metadata", i, "0",
-            os.path.join(output_dir, "input_oocyte_NSN_Hoechst_{}.txt".format(i)))
+            "output/tool-output-newdata2/oocyte_NSN/high/shift-{}k/output_sum_matrix_500k_shift_{}k.txt".format(i * 100,
+                                                                                                                i * 100),
+            "metadata", "500k", "{}k".format(i * 100),
+            "output/range_output2/output_oocyte_NSN_500k_shift_{}k.txt".format(i * 100))
 
-    for i in bin_list:
+    for i in range(1, 5):
         convert_bins(
-            "output/tool-output-newdata/oocyte_SN/oocyte_SN_Hoechst/{}/output_sum_matrix_{}.txt".format(i, i),
-            "metadata", i, "0",
-            os.path.join(output_dir, "input_oocyte_SN_Hoechst_{}.txt".format(i)))
+            "output/tool-output-newdata2/oocyte_SN/high/shift-{}k/output_sum_matrix_500k_shift_{}k.txt".format(i * 100,
+                                                                                                               i * 100),
+            "metadata", "500k", "{}k".format(i * 100),
+            "output/range_output2/output_oocyte_SN_500k_shift_{}k.txt".format(i * 100))
 
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/pronucleus_female/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_pronucleus_female_{}.txt".format(i)))
+    for i in range(1, 5):
+        convert_bins(
+            "output/tool-output-newdata2/pronucleus_male/high/{}k/output_sum_matrix_500k_shift_{}k.txt".format(i * 100,
+                                                                                                               i * 100),
+            "metadata", "500k", "{}k".format(i * 100),
+            "output/range_output2/output_pronucleus_male_500k_shift_{}k.txt".format(i * 100))
 
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/pronucleus_male/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_pronucleus_male_{}.txt".format(i)))
-
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/oocyte_SN/oocyte_SN_all/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_oocyte_SN_all_{}.txt".format(i)))
-
-    for i in bin_list:
-        convert_bins("output/tool-output-newdata/oocyte_NSN/oocyte_NSN_all/{}/output_sum_matrix_{}.txt".format(i, i),
-                     "metadata", i, "0",
-                     os.path.join(output_dir, "input_oocyte_NSN_all_{}.txt".format(i)))
+    for i in range(1, 5):
+        convert_bins(
+            "output/tool-output-newdata2/pronucleus_female/high/{}k/output_sum_matrix_500k_shift_{}k.txt".format(
+                i * 100,
+                i * 100),
+            "metadata", "500k", "{}k".format(i * 100),
+            "output/range_output2/output_pronucleus_female_500k_shift_{}k.txt".format(i * 100))
