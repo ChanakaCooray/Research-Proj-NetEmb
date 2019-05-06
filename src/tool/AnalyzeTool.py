@@ -153,7 +153,7 @@ def get_max_sum(data_dir, metadata, bin_size, shift):
             split_line = line.split()
             bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
 
-    max_sum = 0
+    max_sum = None
     for filename in os.listdir(data_dir):
 
         count = 0
@@ -172,7 +172,10 @@ def get_max_sum(data_dir, metadata, bin_size, shift):
 
                 if not intra_chrom:
                     count += 1
-        if count > max_sum:
+
+        if not max_sum:
+            max_sum = count
+        elif count > max_sum:
             max_sum = count
 
     return max_sum
@@ -191,7 +194,7 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
             split_line = line.split()
             bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
 
-    min_sum = 0
+    min_sum = None
     for filename in os.listdir(data_dir):
 
         count = 0
@@ -210,7 +213,10 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
 
                 if not intra_chrom:
                     count += 1
-        if count < min_sum or min_sum == 0:
+
+        if not min_sum:
+            min_sum = count
+        elif count < min_sum:
             min_sum = count
 
     return min_sum
