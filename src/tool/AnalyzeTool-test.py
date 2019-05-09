@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import math
 from scipy.stats import binom
+import matplotlib.pyplot as plt
 
 
 # process the data file to an edge list file of bins
@@ -194,6 +195,7 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
             split_line = line.split()
             bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
 
+    value_list = []
     min_sum = None
     for filename in os.listdir(data_dir):
 
@@ -214,12 +216,17 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
                 if not intra_chrom:
                     count += 1
 
-        if not min_sum:
-            min_sum = count
-        elif count < min_sum:
-            min_sum = count
+        value_list.append(count)
 
-    return min_sum
+        # if not min_sum:
+        #     min_sum = count
+        # elif count < min_sum:
+        #     min_sum = count
+
+    a = np.array(value_list)
+    p = np.percentile(a, 1)
+
+    return p
 
 
 # generate the mean of sum values of all the cells
@@ -427,14 +434,29 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
     out = open(output_file, "w")
     out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
+    list_hist = []
+    # count_3 = 0
+
     for i in range(0, rows):
         for j in range(0, cols):
             if data[i][j] != 0:
+
+                # list_hist.append(int(data[i][j]))
+                #
+                # if int(data[i][j]) >= 7:
+                #     count_3 += 1
+
                 value = int(data[i][j])
                 p_value = calculate_f_sum(number_of_cells, value, p_value_thresh)
                 if p_value <= threshold(M, p_value_user):
                     count1 += 1
                     out.write("{} {} {} {}\n".format(i, j, value, p_value))
+
+    # plt.title("Histogram")
+    # plt.hist(list_hist, bins=1000)
+    # plt.show()
+
+    # print(count_3)
 
     out.close()
 
@@ -578,6 +600,7 @@ def main():
     #     shutil.rmtree(os.path.join(final_output_dir, "temp"))
     # except OSError as e:
     #     print("Error: %s - %s." % (e.filename, e.strerror))
+
 
 if __name__ == '__main__':
     main()
