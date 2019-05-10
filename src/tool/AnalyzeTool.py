@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import math
 from scipy.stats import binom
+import shutil
 
 
 # process the data file to an edge list file of bins
@@ -194,7 +195,7 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
             split_line = line.split()
             bin_range[split_line[0]] = (int(split_line[2]), int(split_line[3]))
 
-    min_sum = None
+    value_list = []
     for filename in os.listdir(data_dir):
 
         count = 0
@@ -214,12 +215,12 @@ def get_min_sum(data_dir, metadata, bin_size, shift):
                 if not intra_chrom:
                     count += 1
 
-        if not min_sum:
-            min_sum = count
-        elif count < min_sum:
-            min_sum = count
+        value_list.append(count)
 
-    return min_sum
+    np_values = np.array(value_list)
+    percent_5 = np.percentile(np_values, 5)
+
+    return percent_5
 
 
 # generate the mean of sum values of all the cells
@@ -574,10 +575,11 @@ def main():
                              p_value_user, zero_bin, threshold_percentage)
 
     # clean up temporary files
-    # try:
-    #     shutil.rmtree(os.path.join(final_output_dir, "temp"))
-    # except OSError as e:
-    #     print("Error: %s - %s." % (e.filename, e.strerror))
+    try:
+        shutil.rmtree(os.path.join(final_output_dir, "temp"))
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+
 
 if __name__ == '__main__':
     main()
