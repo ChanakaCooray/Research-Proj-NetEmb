@@ -3,7 +3,7 @@
 #PBS -N Job_AnalyzeTool_oocyte_SN_all
 ##serial jobs: only 1 processor core is requested
 #PBS -l select=1:mem=8gb:ncpus=4
-#PBS -l walltime=72:00:00
+#PBS -l walltime=08:00:00
 ##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
 #PBS -W group_list=x-ccast-prj-luliu
 #
@@ -11,11 +11,9 @@
 cd $PBS_O_WORKDIR
 #
 
-python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-newdata2/oocyte_SN/high" --high
-
-python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-newdata2/oocyte_SN/medium" --medium
-
-python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-newdata2/oocyte_SN/low" --low
+python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-v2/oocyte_SN_500k_max.txt" --max
+python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-v2/oocyte_SN_500k_mean.txt" --mean
+python ../../src/tool/AnalyzeTool.py --data "/gpfs1/scratch/chanaka.cooray/jobs/work/preprocessed-data/oocyte_SN/oocyte_SN_all" --bin-size "500k" --config-file "../../metadata/mm9_chrom_sizes.txt" --output "../../output/tool-output-v2/oocyte_SN_500k_min.txt" --min
 
 
 
