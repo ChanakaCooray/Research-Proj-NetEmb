@@ -3,7 +3,7 @@
 #PBS -N Job_AnalyzeTool_pronucleus_female
 ##serial jobs: only 1 processor core is requested
 #PBS -l select=1:mem=16gb:ncpus=4
-#PBS -l walltime=72:00:00
+#PBS -l walltime=08:00:00
 ##replace "x-ccast-prj" below with "x-ccast-prj-[your sponsor's project group]"
 #PBS -W group_list=x-ccast-prj-luliu
 #
