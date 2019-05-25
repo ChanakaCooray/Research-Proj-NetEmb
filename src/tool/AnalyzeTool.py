@@ -313,16 +313,10 @@ def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata)
     # create directories for output file if not exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    # create directory if not exists
-    # if not os.path.exists(output_dir_zero_bin):
-    #     os.makedirs(output_dir_zero_bin)
-
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
-        # output_file = os.path.join(output_dir_zero_bin, "zero_bin_{}.txt".format(bin_size))
     else:
         chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
-        # output_file = os.path.join(output_dir_zero_bin, "zero_bin_{}_shift_{}.txt".format(bin_size, shift))
 
     bin_range = {}
     with open(chrom_bin_range) as f:
@@ -334,6 +328,7 @@ def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata)
     shift = convert(shift)
 
     out = open(output_file, "w")
+    out.write("{} {} {} {}\n".format("Chromosome", "Bin", "Start-Index", "End-Index"))
     for key, val in zero_bin_list.items():
         bin_n = key
         chrm_n = val
@@ -354,7 +349,7 @@ def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata)
         if end_index >= chrm_info[0]:
             end_index = chrm_info[0] - 1
 
-        out.write("{} {} {} {}\n".format(key, val, start_index, end_index))
+        out.write("{} {} {} {}\n".format(val, key, start_index, end_index))
     out.close()
 
     # df_zero_bin.to_csv(output_file, header=None, index=None, sep=' ', mode='w')
@@ -362,14 +357,11 @@ def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata)
 
 # generate the final analysis
 def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, output_file,
-                             p_value_user, zero_bin, zero_bin_file):
+                             p_value_user, zero_bin_file):
     if shift == '0':
         chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size, shift)
-        # output_file = os.path.join(output_dir, "output_{}.txt".format(bin_size))
     else:
         chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
-        # output_file = os.path.join(output_dir,
-        #                            "output_{}_shift_{}.txt".format(bin_size, shift))
 
     bin_range = {}
     with open(chrom_bin_range) as f:
@@ -395,7 +387,7 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
 
     df_zero_bin = pd.DataFrame(list(zero_bin_list.items()), columns=['bin', 'chrm'])
 
-    if zero_bin:
+    if not zero_bin_file == 'null':
         write_zero_bin_output(zero_bin_list, zero_bin_file, shift, bin_size, metadata)
 
     df_zero_bin_count = df_zero_bin['chrm'].value_counts().reset_index()
@@ -510,10 +502,8 @@ def main():
     parser.add_argument("--min", action='store_true', default=False)
     parser.add_argument("--mean", action='store_true', default=False)
     parser.add_argument("--max", action='store_true', default=False)
-    parser.add_argument("--zero-bin", action='store_true', default=False,
-                        help="If checked, the program outputs a file that lists bins with no interactions.")
     parser.add_argument("--zero-bin-file", default='null',
-                        help="Path to the output file that lists the bins with no interactions.")
+                        help="If specified, the program outputs a file that lists the bins with no interactions.")
     parser.add_argument("--p-value", default='0.05', help="P Value")
 
     args = parser.parse_args()
@@ -523,12 +513,7 @@ def main():
     config_file = args.config_file
     bin_size = args.bin_size
     p_value_user = float(args.p_value)
-    zero_bin = args.zero_bin
     zero_bin_file = args.zero_bin_file
-
-    if zero_bin:
-        if zero_bin_file == 'null':
-            sys.exit('Specify the file to output the bins with no interactions using the argument [--zero-bin-file].')
 
     if args.min:
         level = "min"
@@ -554,10 +539,6 @@ def main():
     # create directories for output file if not exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
-    # create output directory if not exists
-    # if not os.path.exists(final_output_dir):
-    #     os.makedirs(final_output_dir)
-
     # count the number of cells/files in the directory for the analysis calculations
     list_files = os.listdir(data_dir)
     number_of_cells = len(list_files)
@@ -581,17 +562,19 @@ def main():
     sum_matrix = generate_sum_matrix(output_edge_dir, metadata, bin_size, shift,
                                      os.path.join(temp_dir, "sum-matrix"))
 
-    print("Sum Value: {}".format(sum_value))
+    # print("Sum Value: {}".format(sum_value))
 
     # generate the output file with significant inter-chromosome interactions
     generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, number_of_cells, output_file,
-                             p_value_user, zero_bin, zero_bin_file)
+                             p_value_user, zero_bin_file)
 
     # clean up temporary files
     try:
         shutil.rmtree(os.path.join(temp_dir))
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
+
+    print("Output file created.")
 
 
 if __name__ == '__main__':
