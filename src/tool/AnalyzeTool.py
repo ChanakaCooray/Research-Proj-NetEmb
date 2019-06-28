@@ -89,9 +89,6 @@ def find_bin(coord, start_index, bin_size, shift):
 
 # generate the starting bin indices meta file
 def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
-    # input = 'metadata/chrom_sizes.txt'
-    # output = 'metadata/chrom_bins_{}_shift_{}.txt'.format(bin_size, shift)
-
     if shift == '0':
         output = os.path.join(metadata, 'chrom_bins_{}.txt'.format(bin_size))
     else:
@@ -115,8 +112,6 @@ def generate_bins(chrom_sizes_file, metadata, bin_size, shift):
 
 # generate the bin ranges for each chromosome
 def generate_ranges(chrom_sizes_file, metadata, bin_size, shift):
-    # input = 'metadata/chrom_sizes.txt'
-
     if shift == '0':
         output = os.path.join(metadata, 'chrom_bins_range_{}.txt'.format(bin_size))
     else:
@@ -262,8 +257,6 @@ def get_mean(data_dir, metadata, bin_size, shift, number_of_cells):
 
 # generate the summation matrix
 def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
-    # output_file = os.path.join(output_dir, "sum_matrix_{}_{}.txt".format(bin_size, analyze_cat))
-
     # create output directory if not exists
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -281,6 +274,9 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
         n = int(last.split()[3]) + 1
 
     sum_matrix = np.zeros((n, n), dtype=np.int)
+
+    non_zero_values = []
+
     for filename in os.listdir(data_dir):
 
         data = {}
@@ -300,9 +296,52 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
             matrix[key[0]][key[1]] = val
             matrix[key[1]][key[0]] = val
 
+        bin_range = {}
+        with open(chrom_bin_range) as f:
+            for line in f:
+                splitLine = line.split()
+                bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
+
+        rows = matrix.shape[0]
+        cols = matrix.shape[1]
+
+        count_non_zero = 0
+        count_total = 0
+
+        matrix = np.triu(matrix)
+
+        for i in range(0, rows):
+            for j in range(0, cols):
+                for key, value in bin_range.items():
+                    if value[0] <= i <= value[1]:
+                        if not value[0] <= j <= value[1]:
+                            count_total += 1
+                            if matrix[i][j] != 0:
+                                count_non_zero += 1
+                            break
+
+        # print(filename)
+        # print("total: " + str(count_total))
+        print(str(count_non_zero))
+
+        non_zero_values.append(count_non_zero)
+
         # np.fill_diagonal(matrix, 0)
 
         sum_matrix = sum_matrix + matrix
+
+    np_non_zero_values = np.array(non_zero_values)
+    percent_5 = np.percentile(np_non_zero_values, 5)
+    percent_25 = np.percentile(np_non_zero_values, 25)
+    percent_50 = np.percentile(np_non_zero_values, 50)
+    percent_75 = np.percentile(np_non_zero_values, 75)
+    percent_95 = np.percentile(np_non_zero_values, 95)
+
+    print("percentile 5: " + str(percent_5))
+    print("percentile 25: " + str(percent_25))
+    print("percentile 50: " + str(percent_50))
+    print("percentile 75: " + str(percent_75))
+    print("percentile 95: " + str(percent_95))
 
     np.savetxt(output_file, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
 
@@ -351,8 +390,6 @@ def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata)
 
         out.write("{} {} {} {}\n".format(val, key, start_index, end_index))
     out.close()
-
-    # df_zero_bin.to_csv(output_file, header=None, index=None, sep=' ', mode='w')
 
 
 # generate the final analysis
@@ -406,6 +443,7 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
         count_N = count_N + n
 
     count = 0
+    # count_inter = 0
     for i in range(0, rows):
         for j in range(0, cols):
             for key, value in bin_range.items():
@@ -413,6 +451,14 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
                     if value[0] <= j <= value[1]:
                         data[i][j] = 0
                         count += 1
+                    # else:
+                    #     count_inter += 1
+
+    # print("rows: " + str(rows))
+    # print("cols: " + str(cols))
+    # print("Intra: " + str(count))
+    # print("All: " + str(rows * cols))
+    # print("Inter: " + str(count_inter))
 
     # unique, counts = np.unique(data, return_counts=True)
     M = ((count_N - count_X) ** 2 - sum_reduction) / 2
