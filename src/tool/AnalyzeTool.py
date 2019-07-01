@@ -275,7 +275,7 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
 
     sum_matrix = np.zeros((n, n), dtype=np.int)
 
-    non_zero_values = []
+    # non_zero_values = []
 
     for filename in os.listdir(data_dir):
 
@@ -302,48 +302,53 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
                 splitLine = line.split()
                 bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
 
-        rows = matrix.shape[0]
-        cols = matrix.shape[1]
+        # rows = matrix.shape[0]
+        # cols = matrix.shape[1]
+        #
+        # count_non_zero = 0
+        # count_total = 0
 
-        count_non_zero = 0
-        count_total = 0
+        # matrix = np.triu(matrix)
 
-        matrix = np.triu(matrix)
-
-        for i in range(0, rows):
-            for j in range(0, cols):
-                for key, value in bin_range.items():
-                    if value[0] <= i <= value[1]:
-                        if not value[0] <= j <= value[1]:
-                            count_total += 1
-                            if matrix[i][j] != 0:
-                                count_non_zero += 1
-                            break
+        # for i in range(0, rows):
+        #     for j in range(0, cols):
+        #         for key, value in bin_range.items():
+        #             if value[0] <= i <= value[1]:
+        #                 if not value[0] <= j <= value[1]:
+        #                     count_total += 1
+        #                     if matrix[i][j] != 0:
+        #                         count_non_zero += 1
+        #                     break
 
         # print(filename)
         # print("total: " + str(count_total))
-        print(str(count_non_zero))
+        # print(str(count_non_zero))
 
-        non_zero_values.append(count_non_zero)
+        # non_zero_values.append(count_non_zero)
 
         # np.fill_diagonal(matrix, 0)
 
         sum_matrix = sum_matrix + matrix
 
-    np_non_zero_values = np.array(non_zero_values)
-    percent_5 = np.percentile(np_non_zero_values, 5)
-    percent_25 = np.percentile(np_non_zero_values, 25)
-    percent_50 = np.percentile(np_non_zero_values, 50)
-    percent_75 = np.percentile(np_non_zero_values, 75)
-    percent_95 = np.percentile(np_non_zero_values, 95)
+    # np_non_zero_values = np.array(non_zero_values)
+    # percent_5 = np.percentile(np_non_zero_values, 5)
+    # percent_25 = np.percentile(np_non_zero_values, 25)
+    # percent_50 = np.percentile(np_non_zero_values, 50)
+    # percent_75 = np.percentile(np_non_zero_values, 75)
+    # percent_95 = np.percentile(np_non_zero_values, 95)
+    #
+    # print("percentile 5: " + str(percent_5))
+    # print("percentile 25: " + str(percent_25))
+    # print("percentile 50: " + str(percent_50))
+    # print("percentile 75: " + str(percent_75))
+    # print("percentile 95: " + str(percent_95))
 
-    print("percentile 5: " + str(percent_5))
-    print("percentile 25: " + str(percent_25))
-    print("percentile 50: " + str(percent_50))
-    print("percentile 75: " + str(percent_75))
-    print("percentile 95: " + str(percent_95))
+    output_file2 = os.path.join(
+        "/gpfs1/scratch/chanaka.cooray/jobs/work/project/Research-Proj-NetEmb/1CDX1/sum_matrix_{}.txt".format(bin_size))
+    np.savetxt(output_file2, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
 
     np.savetxt(output_file, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
+
 
     return output_file
 
