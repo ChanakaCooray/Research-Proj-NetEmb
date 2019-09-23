@@ -313,7 +313,7 @@ def main3():
     # sig_bin_file = "output/tool-output-v2/1CDX3_500k_max.txt"
     # sig_bin_file = "output/tool-output-v2/1CDX4_500k_max.txt"
 
-    for y in range(1, 5):
+    for y in range(2, 3):
         # print("1CDX{}".format(y))
         sig_bin_file = "output/tool-output-v2/1CDX{}_500k_max.txt".format(y)
 
@@ -354,7 +354,7 @@ def main3():
         # cou = 0
         for elem in ordered_list_tuples:
             # print(str(elem[0]) + "a" + str(elem[1]))
-            if elem[1] < 3:
+            if elem[1] < 4:
                 break
             bin_set.append(elem[0])
             frequency_list.append(elem[1])
