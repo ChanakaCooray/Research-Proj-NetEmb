@@ -176,39 +176,17 @@ def nCr(n, r):
 
 
 def main():
-    # start = time.time()
-    # x = calculate_f_sum(5, 2, 0.4)
-    # end = time.time()
-    # print(end - start)
-    # #
-    # start = time.time()
-    # y = calculate_f_sum2(5, 2, 0.4)
-    # end = time.time()
-    # print(end - start)
+    matrix = np.array([ [1,2,3,4],
+                        [5,6,7,8],
+                        [9,10,11,12],
+                        [13,14,15,16]])
 
-    x = calculate_f_sum(5, 2, 0.4)
-    x2 = calculate_f_sum2(5, 2, 0.4)
+    rows = matrix.shape[0]
+    cols = matrix.shape[1]
 
-    print(x)
-    print(x2)
-
-    # print(x)
-    # print(y)
-    # global master_list
-    # executor = ThreadPoolExecutor(40)
-    #
-    # i = [4, 5, 7]
-
-    # for i in range(1,3):
-    # master_list = list(executor.map(a, i))
-
-    # b = list(executor.map(a, i))
-    #
-    # print(b)
-
-    # print(master_list)
-    # executor.submit(a)
-    # executor.submit(a)
+    for i in range(0, rows):
+        for j in range(i+1, cols):
+            print(matrix[i][j])
 
 
 if __name__ == '__main__':
