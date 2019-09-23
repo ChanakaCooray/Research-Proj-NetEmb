@@ -344,7 +344,7 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
     # print("percentile 95: " + str(percent_95))
 
     output_file2 = os.path.join(
-        "/gpfs1/scratch/chanaka.cooray/jobs/work/project/Research-Proj-NetEmb/1CDX1/sum_matrix_{}.txt".format(bin_size))
+        "/gpfs1/scratch/chanaka.cooray/jobs/work/project/Research-Proj-NetEmb/temp/1CDX4/sum_matrix_{}.txt".format(bin_size))
     np.savetxt(output_file2, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
 
     np.savetxt(output_file, sum_matrix, fmt='%d', delimiter=' ', newline='\n')
