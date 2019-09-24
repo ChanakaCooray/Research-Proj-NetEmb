@@ -277,6 +277,77 @@ def generate_percentile_results(data_dir, metadata, bin_size, shift, output_dir)
     return output_file
 
 
+# generate the summation matrix
+def generate_count_results(data_dir, metadata, bin_size, shift, output_dir):
+    # create output directory if not exists
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    if shift == '0':
+        output_file = os.path.join(output_dir, "count_info.txt")
+        chrom_bin_range = "{}/chrom_bins_range_{}.txt".format(metadata, bin_size)
+    else:
+        output_file = os.path.join(output_dir, "count_info.txt")
+        chrom_bin_range = "{}/chrom_bins_range_{}_shift_{}.txt".format(metadata, bin_size, shift)
+
+    # search for last index
+    with open(chrom_bin_range) as f:
+        for last in f: pass
+        n = int(last.split()[3]) + 1
+
+    # sum_matrix = np.zeros((n, n), dtype=np.int)
+
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            splitLine = line.split()
+            bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
+
+    # non_zero_values = []
+
+    output = open(output_file, "w")
+
+    for filename in os.listdir(data_dir):
+        data = {}
+        with open(os.path.join(data_dir, filename)) as f:
+            for line in f:
+                splitLine = line.split()
+                edge1 = int(splitLine[0])
+                edge2 = int(splitLine[1])
+                if edge1 <= edge2:
+                    data[(edge1, edge2)] = int(splitLine[2])
+                else:
+                    data[(edge2, edge1)] = int(splitLine[2])
+
+        matrix = np.zeros((n, n), dtype=np.int)
+
+        for key, val in data.items():
+            matrix[key[0]][key[1]] = val
+            matrix[key[1]][key[0]] = val
+
+        rows = matrix.shape[0]
+        cols = matrix.shape[1]
+
+        # matrix = np.triu(matrix)
+
+        count = 0
+        for i in range(0, rows):
+            for j in range(i + 1, cols):
+                for key, value in bin_range.items():
+                    if value[0] <= i <= value[1]:
+                        if value[0] <= j <= value[1]:
+                            matrix[i][j] = -1
+                if matrix[i][j] >= 2:
+                    count += 1
+
+        # np_value_list = np.array(value_list)
+        output.write("{}\n".format(count))
+
+    output.close()
+
+    return output_file
+
+
 def write_zero_bin_output(zero_bin_list, output_file, shift, bin_size, metadata):
     # create directories for output file if not exists
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
@@ -534,7 +605,7 @@ def main():
     #     sum_value = get_min_sum(output_edge_dir, metadata, bin_size, shift)
 
     # generate the summation matrix for all the cells
-    generate_percentile_results(output_edge_dir, metadata, bin_size, shift,
+    generate_count_results(output_edge_dir, metadata, bin_size, shift,
                                 os.path.join(temp_dir, "sum-matrix"))
 
     # # print("Sum Value: {}".format(sum_value))
