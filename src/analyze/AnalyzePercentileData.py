@@ -202,11 +202,18 @@ def generate_percentile_results(data_dir, metadata, bin_size, shift, output_dir)
                     value_list.append(int(matrix[i][j]))
 
         np_value_list = np.array(value_list)
-        output.write("{},{},{},{},{},{},{},{},{},{}\n".format(np.percentile(np_value_list, 10), np.percentile(np_value_list, 20),
-                                      np.percentile(np_value_list, 30), np.percentile(np_value_list, 40),
-                                      np.percentile(np_value_list, 50), np.percentile(np_value_list, 60),
-                                           np.percentile(np_value_list, 70), np.percentile(np_value_list, 80),
-                                           np.percentile(np_value_list, 90),np.max(np_value_list)))
+        output.write("{},{},{},{},{},{},{},{},{},{},{},{}\n".format(np.percentile(np_value_list, 10),
+                                                                    np.percentile(np_value_list, 20),
+                                                                    np.percentile(np_value_list, 30),
+                                                                    np.percentile(np_value_list, 40),
+                                                                    np.percentile(np_value_list, 50),
+                                                                    np.percentile(np_value_list, 60),
+                                                                    np.percentile(np_value_list, 70),
+                                                                    np.percentile(np_value_list, 80),
+                                                                    np.percentile(np_value_list, 90),
+                                                                    np.percentile(np_value_list, 95),
+                                                                    np.percentile(np_value_list, 99),
+                                                                    np.max(np_value_list)))
 
         # print(filename)
         # print("total: " + str(count_total))
