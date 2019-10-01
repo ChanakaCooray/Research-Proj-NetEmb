@@ -273,6 +273,12 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
         for last in f: pass
         n = int(last.split()[3]) + 1
 
+    bin_range = {}
+    with open(chrom_bin_range) as f:
+        for line in f:
+            splitLine = line.split()
+            bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
+
     sum_matrix = np.zeros((n, n), dtype=np.int)
 
     # non_zero_values = []
@@ -286,10 +292,18 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
                 edge1 = int(splitLine[0])
                 edge2 = int(splitLine[1])
                 val = int(splitLine[2])
+
                 if 2 <= val <= 100:
                     val = 1
                 else:
                     val = 0
+
+                for key, value in bin_range.items():
+                    if value[0] <= edge1 <= value[1]:
+                        if value[0] <= edge2 <= value[1]:
+                            val = 1
+                            break
+
                 if edge1 <= edge2:
                     data[(edge1, edge2)] = val
                 else:
@@ -300,12 +314,6 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
         for key, val in data.items():
             matrix[key[0]][key[1]] = val
             matrix[key[1]][key[0]] = val
-
-        bin_range = {}
-        with open(chrom_bin_range) as f:
-            for line in f:
-                splitLine = line.split()
-                bin_range[splitLine[0]] = (int(splitLine[2]), int(splitLine[3]))
 
         # rows = matrix.shape[0]
         # cols = matrix.shape[1]
