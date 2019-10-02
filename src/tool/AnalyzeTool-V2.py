@@ -291,19 +291,18 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
                 splitLine = line.split()
                 edge1 = int(splitLine[0])
                 edge2 = int(splitLine[1])
-                # val = int(splitLine[2])
-                val = 1
+                val = int(splitLine[2])
 
-                # if 2 <= val <= 100:
-                #     val = 1
-                # else:
-                #     val = 0
+                if 2 <= val <= 100:
+                    val = 1
+                else:
+                    val = 0
 
-                # for key, value in bin_range.items():
-                #     if value[0] <= edge1 <= value[1]:
-                #         if value[0] <= edge2 <= value[1]:
-                #             val = 1
-                #             break
+                for key, value in bin_range.items():
+                    if value[0] <= edge1 <= value[1]:
+                        if value[0] <= edge2 <= value[1]:
+                            val = 1
+                            break
 
                 if edge1 <= edge2:
                     data[(edge1, edge2)] = val
