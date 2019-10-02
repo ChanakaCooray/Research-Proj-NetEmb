@@ -291,12 +291,13 @@ def generate_sum_matrix(data_dir, metadata, bin_size, shift, output_dir):
                 splitLine = line.split()
                 edge1 = int(splitLine[0])
                 edge2 = int(splitLine[1])
-                val = int(splitLine[2])
+                # val = int(splitLine[2])
+                val = 1
 
-                if 2 <= val <= 100:
-                    val = 1
-                else:
-                    val = 0
+                # if 2 <= val <= 100:
+                #     val = 1
+                # else:
+                #     val = 0
 
                 # for key, value in bin_range.items():
                 #     if value[0] <= edge1 <= value[1]:
@@ -467,13 +468,14 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
         for j in range(0, cols):
             if data[i][j] != 0:
                 count_all += 1
-            for key, value in bin_range.items():
-                if value[0] <= i <= value[1]:
-                    if value[0] <= j <= value[1]:
-                        data[i][j] = 0
-                        count += 1
-                    # else:
-                    #     count_inter += 1
+                for key, value in bin_range.items():
+                    if value[0] <= i <= value[1]:
+                        if value[0] <= j <= value[1]:
+                            if data[i][j] != 0:
+                                count += 1
+                            data[i][j] = 0
+                        # else:
+                        #     count_inter += 1
 
     print("All interactions: {}".format(count_all))
     print("Intra interactions: {}".format(count))
