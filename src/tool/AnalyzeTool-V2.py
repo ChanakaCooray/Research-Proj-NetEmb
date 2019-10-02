@@ -461,9 +461,12 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
         count_N = count_N + n
 
     count = 0
+    count_all = 0
     # count_inter = 0
     for i in range(0, rows):
         for j in range(0, cols):
+            if data[i][j] != 0:
+                count_all += 1
             for key, value in bin_range.items():
                 if value[0] <= i <= value[1]:
                     if value[0] <= j <= value[1]:
@@ -471,6 +474,9 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
                         count += 1
                     # else:
                     #     count_inter += 1
+
+    print("All interactions: {}".format(count_all))
+    print("Inter interactions: {}".format(count))
 
     # print("rows: " + str(rows))
     # print("cols: " + str(cols))
