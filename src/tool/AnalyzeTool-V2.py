@@ -494,14 +494,18 @@ def generate_analyzed_output(sum_matrix, sum_value, metadata, bin_size, shift, n
     out = open(output_file, "w")
     out.write("{} {} {} {}\n".format("bin1", "bin2", "count", "p_value"))
 
+    count_inter = 0
     for i in range(0, rows):
         for j in range(0, cols):
             if data[i][j] != 0:
+                count_inter += 1
                 value = int(data[i][j])
                 p_value = calculate_f_sum(number_of_cells, value, p_value_thresh)
                 if p_value <= threshold(M, p_value_user):
                     count1 += 1
                     out.write("{} {} {} {}\n".format(i, j, value, p_value))
+
+    print("Inter interactions(Upper): {}".format(count_inter))
 
     out.close()
 
